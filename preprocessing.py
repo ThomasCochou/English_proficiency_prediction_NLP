@@ -23,9 +23,16 @@ for input_file in os.listdir():
 
         for data in input_text :
             data = data.get_text()
-            preproccesed_text = preproccesed_text + data
+            preproccesed_text = preproccesed_text + data + " "
 
         preproccesed_text = re.sub(">","",preproccesed_text)
+        pattern = re.compile('[a-zA-Z_ ]')
+        matches = pattern.findall(preproccesed_text)
+
+        preproccesed_text = ""
+
+        for data in matches :
+            preproccesed_text = preproccesed_text + data
 
         os.chdir("../../")
         os.chdir("preprocessed_text/")
