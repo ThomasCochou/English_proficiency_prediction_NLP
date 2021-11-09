@@ -12,32 +12,28 @@ os.chdir(path)
 for input_file in os.listdir():
     if input_file.endswith(".txt"):
 
-        input_text_open = open(input_file,'r')
-        input_text = input_text_open.read()
-
-        soup = BeautifulSoup(input_text,'lxml')
-        input_text = soup.find_all('b')
-
-        input_string = "".join(str(input_text))
+        input_text = open(input_file,'r')
+        input_string = input_text.read()
+        input_text.close()
 
         soup = BeautifulSoup(input_string,'lxml')
-        input_text = soup.get_text()
+        input_soup = soup.find_all('b')
+        input_string = "".join(str(input_soup))
 
-        input_string = "".join(str(input_text))
+        soup = BeautifulSoup(input_string,'lxml')
+        input_soup = soup.get_text()
+        input_string = "".join(str(input_soup))
 
-        input_string = re.sub(">","",input_string)
         input_string = re.sub(">","",input_string)
 
         pattern = re.compile('[a-zA-Z_ ]')
         matches = pattern.findall(input_string)
-
         preproccesed_text = "".join(matches)
 
         os.chdir(output_path)
 
-        output_file = open(input_file, "w") 
-        output_file.write(preproccesed_text)
-        output_file.close() 
+        output_text = open(input_file, "w") 
+        output_text.write(preproccesed_text)
+        output_text.close() 
 
-        os.chdir("../")
-        os.chdir(path)
+        os.chdir("../"+path)
