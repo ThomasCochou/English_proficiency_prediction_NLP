@@ -8,8 +8,13 @@ The source of the corpus data is the transcripts of the audio-recorded speech sa
 The goal is to build a machine learning algorithm for predicting the SST score of each participant based on their transcript.
 
 Steps:
-1 - Pre-process the dataset: extract the participant transcript (all <B><B/> tags). Inside participant transcript, you can remove all other tags and extract only English words.
-2 - Process the dataset: extract features with the Bag of Word (BoW) technique
-3 - Train a classifier to predict the SST score
-4 - Compute the accuracy of your system (the number of participant classified correctly) and plot the confusion matrix.
-5 - Try to improve your system (for example you can try to use GloVe instead of BoW). 
+
+  1 - Pre-process the dataset: extract the participant transcript (all <B><B/> tags). Inside participant transcript, you can remove all other tags and extract only English words.
+
+  2 - Process the dataset: extract features with the Bag of Word (BoW) technique
+
+  3 - Train a classifier to predict the SST score
+
+  4 - Compute the accuracy of your system (the number of participant classified correctly) and plot the confusion matrix.
+
+  5 - Try to improve your system (for example you can try to use GloVe instead of BoW). 
