@@ -9,7 +9,6 @@ output_path = "../../preprocessed_text"
 
 os.chdir(path)
 
-
 for input_file in os.listdir():
     if input_file.endswith(".txt"):
 
@@ -23,9 +22,9 @@ for input_file in os.listdir():
 
         for data in input_text :
             data = data.get_text()
+            data = re.sub(">","",data)
             preproccesed_text = preproccesed_text + data + " "
 
-        preproccesed_text = re.sub(">","",preproccesed_text)
         pattern = re.compile('[a-zA-Z_ ]')
         matches = pattern.findall(preproccesed_text)
 
