@@ -5,7 +5,7 @@ import re
 path = "NICT_JLE_4.1/LightDataSet"
 # path = "NICT_JLE_4.1/LearnerOriginal"
 
-output_path = "../../preprocessed_text"
+output_path = "../../preprocessed_text/"
 
 os.chdir(path)
 
@@ -18,23 +18,22 @@ for input_file in os.listdir():
         soup = BeautifulSoup(input_text,'lxml')
         input_text = soup.find_all('b')
 
-        preproccesed_text = ""
+        input_string = "".join(str(input_text))
 
-        for data in input_text :
-            data = data.get_text()
-            data = re.sub(">","",data)
-            preproccesed_text = preproccesed_text + data + " "
+        soup = BeautifulSoup(input_string,'lxml')
+        input_text = soup.get_text()
+
+        input_string = "".join(str(input_text))
+
+        input_string = re.sub(">","",input_string)
+        input_string = re.sub(">","",input_string)
 
         pattern = re.compile('[a-zA-Z_ ]')
-        matches = pattern.findall(preproccesed_text)
+        matches = pattern.findall(input_string)
 
-        preproccesed_text = ""
+        preproccesed_text = "".join(matches)
 
-        for data in matches :
-            preproccesed_text = preproccesed_text + data
-
-        os.chdir("../../")
-        os.chdir("preprocessed_text/")
+        os.chdir(output_path)
 
         output_file = open(input_file, "w") 
         output_file.write(preproccesed_text)
