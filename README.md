@@ -22,3 +22,7 @@ The goal is to build a machine learning algorithm for predicting the SST score o
 ## Adjustments
   - Filter out stop and short words with NLTK -> Add parameters to `preprocessing.py`
   - Looking for the importance of 'Mmmm' 'Hum' (reflexion) so not keeping only english words
+  
+## Errors
+if `bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?`
+then `pip install lxml`
