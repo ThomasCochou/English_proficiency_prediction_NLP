@@ -20,5 +20,5 @@ The goal is to build a machine learning algorithm for predicting the SST score o
   5 - Try to improve your system (for example you can try to use GloVe instead of BoW). 
 
 ## Adjustments
-  - We could filter out stop words in `preprocessing.py` with NLTK.
+  - We could filter out stop and short words in `preprocessing.py` with NLTK.
   - Looking for the importance of 'Mmmm' 'Hum' (reflexion) 
