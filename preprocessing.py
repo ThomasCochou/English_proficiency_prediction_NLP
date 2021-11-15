@@ -3,26 +3,40 @@ from bs4 import BeautifulSoup
 import re
 import xlrd
 
-path = "NICT_JLE_4.1/LightDataSet"
-# path = "NICT_JLE_4.1/LearnerOriginal"
+input_path = "NICT_JLE_4.1/LearnerOriginal"
 
 xls_path = "NICT_JLE_4.1/NICT_JLE_list.xls"
 
 
 #PARAMETERS
-output_path = "../../preprocessed_text/"
+output_path = "preprocessed_text/"
+
+train_data_path = "train_data/"
+test_data_path = "test_data/"
+
+ratio_train_test = 0.7
+
+
+if not os.path.exists(output_path+train_data_path):
+	os.makedirs(output_path+train_data_path)
+
+if not os.path.exists(output_path+test_data_path):
+	os.makedirs(output_path+test_data_path)
 
 
 wb = xlrd.open_workbook(xls_path)
 sheet = wb.sheet_by_index(0)
 
-os.chdir(path)
+os.chdir(input_path)
 
+folder_len = len([name for name in os.listdir() if (os.path.isfile(name) and name.endswith(".txt"))])
+
+cnt = 1
 
 for input_file in os.listdir():
     if input_file.endswith(".txt"):
 
-        input_text = open(input_file,'r')
+        input_text = open(input_file,'r', errors='ignore')
         input_string = input_text.read()
         input_text.close()
 
@@ -40,7 +54,10 @@ for input_file in os.listdir():
         matches = pattern.findall(input_string)
         preproccesed_text = "".join(matches)
 
-        os.chdir(output_path)
+        if cnt < folder_len*ratio_train_test :
+        	os.chdir("../../"+output_path+train_data_path)
+        else :
+        	os.chdir("../../"+output_path+test_data_path)
 
         for row_num in range(sheet.nrows):
             row_value = sheet.row_values(row_num)
@@ -49,4 +66,7 @@ for input_file in os.listdir():
                 output_text.write(preproccesed_text)
                 output_text.close() 
 
-        os.chdir("../"+path)
+        print("Preprocessing = "+str(cnt)+"/"+str(folder_len), end="\r")
+
+        cnt += 1
+        os.chdir("../../"+input_path)
