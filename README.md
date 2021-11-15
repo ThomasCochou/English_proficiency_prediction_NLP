@@ -20,7 +20,6 @@ The goal is to build a machine learning algorithm for predicting the SST score o
   5 - Try to improve your system (for example you can try to use GloVe instead of BoW). 
 
 ## Adjustments
-  - Split Train / Test folder from the `preprocessing.py` script
   - Filter out stop and short words with NLTK -> Add parameters to `preprocessing.py`
   - Looking for the importance of 'Mmmm' 'Hum' (reflexion) so not keeping only english words
   
