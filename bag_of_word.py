@@ -1,9 +1,13 @@
 import os
 from collections import Counter
 from keras.preprocessing.text import Tokenizer
+import numpy as np
 
 train_data_path = "preprocessed_text/train_data/"
 test_data_path = "preprocessed_text/test_data/"
+
+output_train_data_path = "preprocessed_text/matrix_train_data/"
+output_test_data_path = "preprocessed_text/matrix_test_data/"
 
 #PARAMETERS
 MIN_OCCURANE = 2
@@ -12,7 +16,7 @@ MIN_OCCURANE = 2
 ##################################
 #   VOCABULARY
 ##################################
-def create_vocab(path,vocab):
+def create_vocab(path, vocab):
 
     os.chdir(path)
 
@@ -39,7 +43,7 @@ def create_vocab(path,vocab):
 ##################################
 #   DATASET
 ##################################
-def transform_dataset(path,tokens, tokenizer) :
+def transform_dataset(path, tokens, tokenizer) :
     docs = list()
 
     os.chdir(path)
@@ -58,12 +62,36 @@ def transform_dataset(path,tokens, tokenizer) :
     if path.endswith("train_data/"):
         tokenizer.fit_on_texts(docs)
 
-    tokenize_data = tokenizer.texts_to_matrix(docs, mode='freq')
+    tokenized_data = tokenizer.texts_to_matrix(docs, mode='freq')
 
     os.chdir("../../")
 
-    return tokenizer, tokenize_data
+    return tokenizer, tokenized_data
 
+##################################
+#   OUTPUT
+##################################
+
+def output_matrix(input_path, output_path, tokenized_data):
+    name_list = list()
+
+    os.chdir(input_path)
+
+    for input_file in os.listdir():
+        if input_file.endswith(".txt"):
+            name_list.append(input_file.split(".")[0])
+
+
+    if not os.path.exists("../../"+output_path):
+        os.makedirs("../../"+output_path)
+    os.chdir("../../"+output_path)
+
+    i = 0
+    for name in name_list :
+        np.savetxt(name+'.out', tokenized_data[i], delimiter=',')
+        i += 1
+
+    os.chdir("../../")
 
 ##################################
 #   PROGRAM
@@ -79,8 +107,11 @@ tokens, vocab = create_vocab(test_data_path,vocab)
 
 print("The 50 most common words: "+str(vocab.most_common(50)))
 
-tokenizer, tokenize_train_data = transform_dataset(train_data_path,tokens,tokenizer)
-tokenizer, tokenize_test_data = transform_dataset(test_data_path,tokens,tokenizer)
+tokenizer, tokenized_train_data = transform_dataset(train_data_path,tokens,tokenizer)
+tokenizer, tokenized_test_data = transform_dataset(test_data_path,tokens,tokenizer)
 
-print("tokenize_train_data.shape : "+str(tokenize_train_data.shape))
-print("tokenize_test_data.shape : "+str(tokenize_test_data.shape))
+print("tokenized_train_data.shape : "+str(tokenized_train_data.shape))
+print("tokenized_test_data.shape : "+str(tokenized_test_data.shape))
+
+output_matrix(train_data_path, output_train_data_path, tokenized_train_data)
+output_matrix(test_data_path, output_test_data_path, tokenized_test_data)
