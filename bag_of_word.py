@@ -6,8 +6,8 @@ import numpy as np
 train_data_path = "preprocessed_text/train_data/"
 test_data_path = "preprocessed_text/test_data/"
 
-output_train_data_path = "preprocessed_text/matrix_train_data/"
-output_test_data_path = "preprocessed_text/matrix_test_data/"
+output_train_data_path = "matrix_train_data/"
+output_test_data_path = "matrix_test_data/"
 
 #PARAMETERS
 MIN_OCCURANE = 2
@@ -74,21 +74,30 @@ def transform_dataset(path, tokens, tokenizer) :
 
 def output_matrix(input_path, output_path, tokenized_data):
     name_list = list()
+    level_list = list()
 
     os.chdir(input_path)
 
     for input_file in os.listdir():
         if input_file.endswith(".txt"):
             name_list.append(input_file.split(".")[0])
+            level_list.append(input_file.split("_")[1].split(".")[0])
 
-
-    if not os.path.exists("../../"+output_path):
-        os.makedirs("../../"+output_path)
-    os.chdir("../../"+output_path)
+    if not os.path.exists("../"+output_path):
+        os.makedirs("../"+output_path)
+    os.chdir("../"+output_path)
 
     i = 0
     for name in name_list :
+        if not os.path.exists(level_list[i]):
+            os.makedirs(level_list[i])
+        os.chdir(level_list[i])
+
+        print("Generate matrix = "+str(i)+"/"+str(len(name_list)), end="\r")
+
         np.savetxt(name+'.out', tokenized_data[i], delimiter=',')
+
+        os.chdir("../")
         i += 1
 
     os.chdir("../../")
