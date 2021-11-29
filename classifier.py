@@ -1,7 +1,7 @@
 import os, pathlib, shutil, random
 from tensorflow import keras
 from keras.models import Sequential
-from keras.layers import Embedding, Flatten, Dense, SpatialDropout1D, Dropout, Conv1D
+from keras.layers import Embedding, Flatten, Dense, SpatialDropout1D, Dropout, Conv1D, LSTM
 from keras import preprocessing
 import numpy as np
 import tensorflow as tf
@@ -56,11 +56,8 @@ print("y_test : ", y_test.shape)
 
 model = Sequential()
 
-model.add(Dropout(0.2, input_shape=(x_train.shape[1],)))
+model.add(Dropout(0.5, input_shape=(x_train.shape[1],)))
 model.add(Dense(50, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(8, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(y_train.shape[1], activation='softmax'))
 
@@ -71,7 +68,7 @@ model.compile(optimizer='rmsprop',
 history = model.fit(x_train,
                     y_train,
                     epochs=200,
-                    batch_size=512,
+                    batch_size=8,
                     validation_data=(x_test, y_test))
 
 history_dict = history.history

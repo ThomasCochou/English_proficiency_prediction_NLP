@@ -11,7 +11,7 @@ output_test_data_path = "matrix_test_data/"
 
 #PARAMETERS
 MIN_OCCURANE = 2
-MODE = "binary"
+MODE = "freq"
 
 
 ##################################
