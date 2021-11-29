@@ -7,7 +7,7 @@ The source of the corpus data is the transcripts of the audio-recorded speech sa
 
 The goal is to build a machine learning algorithm for predicting the SST score of each participant based on their transcript.
 
-Steps:
+## Steps:
 
   1 - Pre-process the dataset: extract the participant transcript (all <B><B/> tags). Inside participant transcript, you can remove all other tags and extract only English words.
 
@@ -18,3 +18,11 @@ Steps:
   4 - Compute the accuracy of your system (the number of participant classified correctly) and plot the confusion matrix.
 
   5 - Try to improve your system (for example you can try to use GloVe instead of BoW). 
+
+## Adjustments
+  - Filter out stop and short words with NLTK -> Add parameters to `preprocessing.py`
+  - Looking for the importance of 'Mmmm' 'Hum' (reflexion) so not keeping only english words
+  
+## Errors
+if `bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?`
+then `pip install lxml`
