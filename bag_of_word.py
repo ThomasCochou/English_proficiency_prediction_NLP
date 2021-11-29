@@ -11,6 +11,7 @@ output_test_data_path = "matrix_test_data/"
 
 #PARAMETERS
 MIN_OCCURANE = 2
+MODE = "binary"
 
 
 ##################################
@@ -62,7 +63,7 @@ def transform_dataset(path, tokens, tokenizer) :
     if path.endswith("train_data/"):
         tokenizer.fit_on_texts(docs)
 
-    tokenized_data = tokenizer.texts_to_matrix(docs, mode='freq')
+    tokenized_data = tokenizer.texts_to_matrix(docs, mode=MODE)
 
     os.chdir("../../")
 

@@ -1,13 +1,17 @@
 import os, pathlib, shutil, random
 from tensorflow import keras
 from keras.models import Sequential
-from keras.layers import Embedding, Flatten, Dense
+from keras.layers import Embedding, Flatten, Dense, SpatialDropout1D, Dropout, Conv1D
 from keras import preprocessing
 import numpy as np
 import tensorflow as tf
+import matplotlib.pyplot as plt
+from keras.preprocessing.sequence import pad_sequences
+from keras.constraints import maxnorm
 
 train_data_matrix_path = "preprocessed_text/matrix_train_data/"
 test_data_matrix_path = "preprocessed_text/matrix_test_data/"
+
 
 def to_tensor(arg):
     arg = tf.convert_to_tensor(arg, dtype=tf.float32)
@@ -19,13 +23,18 @@ def create_input(path):
     x = list()
     y = list()
 
+    folder_len = len([name for name in os.listdir() if (os.path.isfile(name) and name.endswith(".out"))])
 
+    cnt = 0
     for input_file in os.listdir():
         if input_file.endswith(".out"):
             y_value = [0] * 9
             x.append(np.loadtxt(input_file))
             y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
             y.append(y_value)
+        print("Classifier = "+str(cnt)+"/"+str(folder_len), end="\r")
+        cnt += 1
+
 
     os.chdir("../../")
 
@@ -45,6 +54,52 @@ print("y_train :", y_train.shape)
 print("x_test :", x_test.shape)
 print("y_test : ", y_test.shape)
 
+model = Sequential()
+
+model.add(Dropout(0.2, input_shape=(x_train.shape[1],)))
+model.add(Dense(50, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(y_train.shape[1], activation='softmax'))
+
+model.compile(optimizer='rmsprop',
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+
+history = model.fit(x_train,
+                    y_train,
+                    epochs=200,
+                    batch_size=512,
+                    validation_data=(x_test, y_test))
+
+history_dict = history.history
+
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, loss, 'b', label='Training loss')
+plt.plot(epochs, val_loss, 'g', label='Validation loss')
+plt.title('Training and validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+
+plt.show()
+
+plt.plot(epochs, acc, 'b', label='Training accuracy')
+plt.plot(epochs, val_acc, 'g', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+
+plt.show()
 
 # Définir le modèle
 # model = Sequential()
@@ -56,13 +111,13 @@ print("y_test : ", y_test.shape)
 
 # history = model.fit()
 
-model = Sequential()
-model.add(Dense(50, input_shape=x_train.shape, activation='relu'))
-model.add(Dense(9, activation='softmax'))
-model.summary()
+# model = Sequential()
+# model.add(Dense(50, input_shape=x_train.shape, activation='relu'))
+# model.add(Dense(9, activation='softmax'))
+# model.summary()
 
-opt = keras.optimizers.SGD(learning_rate=0.1, momentum=0.9)
-model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
+# opt = keras.optimizers.SGD(learning_rate=0.1, momentum=0.9)
+# model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=50, verbose=2)
+# model.fit(x_train, y_train, epochs=50, verbose=2)
 
