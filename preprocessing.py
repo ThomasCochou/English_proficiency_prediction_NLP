@@ -2,6 +2,7 @@ import os
 from bs4 import BeautifulSoup
 import re
 import xlrd
+from decouple import config
 
 input_path = "NICT_JLE_4.1/LearnerOriginal"
 
@@ -14,7 +15,7 @@ output_path = "preprocessed_text/"
 train_data_path = "train_data/"
 test_data_path = "test_data/"
 
-ratio_train_test = 0.7
+ratio_train_test = config("RATIO_TRAIN_TEST")
 
 
 if not os.path.exists(output_path+train_data_path):
@@ -51,10 +52,10 @@ for input_file in os.listdir():
         input_string = re.sub(">","",input_string)
 
         pattern = re.compile('[a-zA-Z_ ]')
-        matches = pattern.findall(input_string)
+        matches = pattern.findall(input_string.lower())
         preproccesed_text = "".join(matches)
 
-        if cnt < folder_len*ratio_train_test :
+        if cnt < folder_len*float(ratio_train_test) :
         	os.chdir("../../"+output_path+train_data_path)
         else :
         	os.chdir("../../"+output_path+test_data_path)

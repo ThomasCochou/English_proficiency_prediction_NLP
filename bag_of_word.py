@@ -2,6 +2,8 @@ import os
 from collections import Counter
 from keras.preprocessing.text import Tokenizer
 import numpy as np
+from decouple import config
+from nltk.corpus import stopwords
 
 train_data_path = "preprocessed_text/train_data/"
 test_data_path = "preprocessed_text/test_data/"
@@ -10,14 +12,16 @@ output_train_data_path = "matrix_train_data/"
 output_test_data_path = "matrix_test_data/"
 
 #PARAMETERS
-MIN_OCCURANE = 2
-MODE = "freq"
+min_occurane = config("MIN_OCCURANE")
+mode = config("MODE")
 
 
 ##################################
 #   VOCABULARY
 ##################################
-def create_vocab(path, vocab):
+def create_vocab(path):
+
+    counter = Counter()
 
     os.chdir(path)
 
@@ -28,9 +32,12 @@ def create_vocab(path, vocab):
             input_text.close()
 
             tokens = input_string.split()
-            vocab.update(tokens)
+            counter.update(tokens)
 
-    tokens = [k for k,c in vocab.items() if c >= MIN_OCCURANE]
+    words = [k for k,c in counter.items() if c >= int(min_occurane) and len(k) > 1]
+
+    stop_words = set(stopwords.words('english'))
+    tokens = [w for w in words if not w in stop_words]
 
     os.chdir("../../")
 
@@ -39,7 +46,7 @@ def create_vocab(path, vocab):
     output_file.write(vocab_string)
     output_file.close()
 
-    return tokens, vocab
+    return tokens
 
 ##################################
 #   DATASET
@@ -49,6 +56,9 @@ def transform_dataset(path, tokens, tokenizer) :
 
     os.chdir(path)
 
+    folder_len = len([name for name in os.listdir() if (os.path.isfile(name) and name.endswith(".txt"))])
+
+    cnt = 0
     for input_file in os.listdir():
         if input_file.endswith(".txt"):
             input_text = open(input_file,'r')
@@ -59,11 +69,13 @@ def transform_dataset(path, tokens, tokenizer) :
             tokens_dataset = [w for w in tokens_dataset if w in tokens]
             line = ' '.join(tokens_dataset)
             docs.append(line)
+            print("Tokenize = "+str(cnt)+"/"+str(folder_len), end="\r")
+        cnt += 1
 
     if path.endswith("train_data/"):
         tokenizer.fit_on_texts(docs)
 
-    tokenized_data = tokenizer.texts_to_matrix(docs, mode=MODE)
+    tokenized_data = tokenizer.texts_to_matrix(docs, mode=mode)
 
     os.chdir("../../")
 
@@ -98,18 +110,17 @@ def output_matrix(input_path, output_path, tokenized_data):
 #   PROGRAM
 ##################################
 
-vocab = Counter()
-tokens = []
+tokenizer_new = Tokenizer()
 
-tokenizer = Tokenizer()
+tokens_train = create_vocab(train_data_path)
+tokens_test = create_vocab(test_data_path)
 
-tokens, vocab = create_vocab(train_data_path,vocab)
-tokens, vocab = create_vocab(test_data_path,vocab)
+vocab = list(set(tokens_test+tokens_train))
 
-print("The 50 most common words: "+str(vocab.most_common(50)))
+print(len(vocab))
 
-tokenizer, tokenized_train_data = transform_dataset(train_data_path,tokens,tokenizer)
-tokenizer, tokenized_test_data = transform_dataset(test_data_path,tokens,tokenizer)
+tokenizer_train, tokenized_train_data = transform_dataset(train_data_path,vocab,tokenizer_new)
+tokenizer, tokenized_test_data = transform_dataset(test_data_path,vocab,tokenizer_train)
 
 print("tokenized_train_data.shape : "+str(tokenized_train_data.shape))
 print("tokenized_test_data.shape : "+str(tokenized_test_data.shape))

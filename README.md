@@ -26,3 +26,9 @@ The goal is to build a machine learning algorithm for predicting the SST score o
 ## Errors
 if `bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?`
 then `pip install lxml`
+
+To get NLTK stopwords
+'''
+>>> import nltk
+>>> nltk.download()
+'''
