@@ -13,17 +13,19 @@ output_test_data_path = "matrix_test_data/"
 
 #PARAMETERS
 min_occurane = config("MIN_OCCURANE")
+min_word_size = config("MIN_WORD_SIZE")
 mode = config("MODE")
 
 
 ##################################
 #   VOCABULARY
 ##################################
-def create_vocab(path):
+def create_vocab(path_train,path_test):
 
-    counter = Counter()
+    # create Counter and count each words
+    vocab = Counter()
 
-    os.chdir(path)
+    os.chdir(path_train)
 
     for input_file in os.listdir():
         if input_file.endswith(".txt"):
@@ -32,31 +34,48 @@ def create_vocab(path):
             input_text.close()
 
             tokens = input_string.split()
-            counter.update(tokens)
-
-    words = [k for k,c in counter.items() if c >= int(min_occurane) and len(k) > 1]
-
-    stop_words = set(stopwords.words('english'))
-    tokens = [w for w in words if not w in stop_words]
+            vocab.update(tokens)
 
     os.chdir("../../")
 
-    vocab_string = ' '.join(tokens)
-    output_file = open("vocab.txt",'w')
-    output_file.write(vocab_string)
-    output_file.close()
+    os.chdir(path_test)
 
-    return tokens
+    for input_file in os.listdir():
+        if input_file.endswith(".txt"):
+            input_text = open(input_file,'r')
+            input_string = input_text.read()
+            input_text.close()
+
+            tokens = input_string.split()
+            vocab.update(tokens)
+
+    os.chdir("../../")
+
+    stop_words = set(stopwords.words('english'))
+
+    # delete the word from vocab
+    # if word size less than min_word_size
+    # if word occurane less thant min_occurane
+    # if word is a stop word from nltk 
+    for k in list(vocab) :
+        if len(k) <= int(min_word_size) or vocab[k] <= int(min_occurane) or k in stop_words:
+            del vocab[k]
+
+    return vocab
 
 ##################################
 #   DATASET
 ##################################
-def transform_dataset(path, tokens, tokenizer) :
-    docs = list()
+def transform_dataset(train_data_path, test_data_path, vocab) :
 
-    os.chdir(path)
+    tokenizer = Tokenizer()
 
-    folder_len = len([name for name in os.listdir() if (os.path.isfile(name) and name.endswith(".txt"))])
+    train_dataset = list()
+    test_dataset = list()
+
+    os.chdir(train_data_path)
+
+    train_data_len = len([name for name in os.listdir() if (os.path.isfile(name) and name.endswith(".txt"))])
 
     cnt = 0
     for input_file in os.listdir():
@@ -65,21 +84,45 @@ def transform_dataset(path, tokens, tokenizer) :
             input_string = input_text.read()
             input_text.close()
 
+            # get only words in vocab
             tokens_dataset = input_string.split()
-            tokens_dataset = [w for w in tokens_dataset if w in tokens]
-            line = ' '.join(tokens_dataset)
-            docs.append(line)
-            print("Tokenize = "+str(cnt)+"/"+str(folder_len), end="\r")
+            tokens_dataset = [w for w in tokens_dataset if w in vocab]
+            text = ' '.join(tokens_dataset)
+            train_dataset.append(text)
         cnt += 1
-
-    if path.endswith("train_data/"):
-        tokenizer.fit_on_texts(docs)
-
-    tokenized_data = tokenizer.texts_to_matrix(docs, mode=mode)
 
     os.chdir("../../")
 
-    return tokenizer, tokenized_data
+    os.chdir(test_data_path)
+
+    test_data_len = len([name for name in os.listdir() if (os.path.isfile(name) and name.endswith(".txt"))])
+
+    cnt = 0
+    for input_file in os.listdir():
+        if input_file.endswith(".txt"):
+            input_text = open(input_file,'r')
+            input_string = input_text.read()
+            input_text.close()
+
+            # get only words in vocab
+            tokens_dataset = input_string.split()
+            tokens_dataset = [w for w in tokens_dataset if w in vocab]
+            text = ' '.join(tokens_dataset)
+            test_dataset.append(text)
+        cnt += 1
+
+    os.chdir("../../")
+
+    dataset = train_dataset + test_dataset
+
+    # fit the tokenizer on all the texts
+    tokenizer.fit_on_texts(dataset)
+
+    # transform to matrix each texts with differents modes
+    tokenized_train_data = tokenizer.texts_to_matrix(train_dataset, mode=mode)
+    tokenized_test_data = tokenizer.texts_to_matrix(test_dataset, mode=mode)
+
+    return tokenized_train_data, tokenized_test_data
 
 ##################################
 #   OUTPUT
@@ -108,19 +151,14 @@ def output_matrix(input_path, output_path, tokenized_data):
 
 ##################################
 #   PROGRAM
+#   Goal : Create a vocabulary, 
 ##################################
 
-tokenizer_new = Tokenizer()
+vocab = create_vocab(train_data_path,test_data_path)
 
-tokens_train = create_vocab(train_data_path)
-tokens_test = create_vocab(test_data_path)
+print(vocab.most_common(100))
 
-vocab = list(set(tokens_test+tokens_train))
-
-print(len(vocab))
-
-tokenizer_train, tokenized_train_data = transform_dataset(train_data_path,vocab,tokenizer_new)
-tokenizer, tokenized_test_data = transform_dataset(test_data_path,vocab,tokenizer_train)
+tokenized_train_data, tokenized_test_data = transform_dataset(train_data_path,test_data_path,vocab)
 
 print("tokenized_train_data.shape : "+str(tokenized_train_data.shape))
 print("tokenized_test_data.shape : "+str(tokenized_test_data.shape))
