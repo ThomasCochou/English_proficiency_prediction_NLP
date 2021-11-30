@@ -17,6 +17,11 @@ test_data_path = "test_data/"
 
 ratio_train_test = config("RATIO_TRAIN_TEST")
 
+##################################
+#   PROGRAM
+#   Goal : Clean the texts, keep words between <b> and lower case it 
+##################################
+
 
 if not os.path.exists(output_path+train_data_path):
 	os.makedirs(output_path+train_data_path)
