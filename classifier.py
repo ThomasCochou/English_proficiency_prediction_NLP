@@ -56,8 +56,9 @@ print("y_test : ", y_test.shape)
 
 model = Sequential()
 
-model.add(Dropout(0.5, input_shape=(x_train.shape[1],)))
-model.add(Dense(50, activation='relu'))
+model.add(Dense(32, activation='relu', input_shape=(x_train.shape[1],)))
+model.add(Dropout(0.5))
+model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(y_train.shape[1], activation='softmax'))
 
@@ -67,8 +68,8 @@ model.compile(optimizer='rmsprop',
 
 history = model.fit(x_train,
                     y_train,
-                    epochs=200,
-                    batch_size=8,
+                    epochs=300,
+                    batch_size=32,
                     validation_data=(x_test, y_test))
 
 history_dict = history.history
