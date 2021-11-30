@@ -11,6 +11,7 @@ output_test_data_path = "matrix_test_data/"
 
 #PARAMETERS
 MIN_OCCURANE = 2
+MODE = "freq"
 
 
 ##################################
@@ -62,7 +63,7 @@ def transform_dataset(path, tokens, tokenizer) :
     if path.endswith("train_data/"):
         tokenizer.fit_on_texts(docs)
 
-    tokenized_data = tokenizer.texts_to_matrix(docs, mode='freq')
+    tokenized_data = tokenizer.texts_to_matrix(docs, mode=MODE)
 
     os.chdir("../../")
 
@@ -74,14 +75,12 @@ def transform_dataset(path, tokens, tokenizer) :
 
 def output_matrix(input_path, output_path, tokenized_data):
     name_list = list()
-    level_list = list()
 
     os.chdir(input_path)
 
     for input_file in os.listdir():
         if input_file.endswith(".txt"):
             name_list.append(input_file.split(".")[0])
-            level_list.append(input_file.split("_")[1].split(".")[0])
 
     if not os.path.exists("../"+output_path):
         os.makedirs("../"+output_path)
@@ -89,15 +88,8 @@ def output_matrix(input_path, output_path, tokenized_data):
 
     i = 0
     for name in name_list :
-        if not os.path.exists(level_list[i]):
-            os.makedirs(level_list[i])
-        os.chdir(level_list[i])
-
         print("Generate matrix = "+str(i)+"/"+str(len(name_list)), end="\r")
-
         np.savetxt(name+'.out', tokenized_data[i], delimiter=',')
-
-        os.chdir("../")
         i += 1
 
     os.chdir("../../")
