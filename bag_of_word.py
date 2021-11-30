@@ -4,6 +4,7 @@ from keras.preprocessing.text import Tokenizer
 import numpy as np
 from decouple import config
 from nltk.corpus import stopwords
+from nltk.corpus import words
 
 train_data_path = "preprocessed_text/train_data/"
 test_data_path = "preprocessed_text/test_data/"
@@ -15,6 +16,9 @@ output_test_data_path = "matrix_test_data/"
 min_occurane = config("MIN_OCCURANE")
 min_word_size = config("MIN_WORD_SIZE")
 mode = config("MODE")
+delete_stop_words = config("DELETE_STOP_WORDS")
+# /!\ keep_only_english_words slow computing
+keep_only_english_words = config("KEEP_ONLY_ENGLISH_WORDS")
 
 
 ##################################
@@ -55,11 +59,15 @@ def create_vocab(path_train,path_test):
 
     # delete the word from vocab
     # if word size less than min_word_size
-    # if word occurane less thant min_occurane
+    # if word occurane less than min_occurane
     # if word is a stop word from nltk 
+    cnt = 0
     for k in list(vocab) :
-        if len(k) <= int(min_word_size) or vocab[k] <= int(min_occurane) or k in stop_words:
-            del vocab[k]
+        if len(k) <= int(min_word_size) or vocab[k] <= int(min_occurane):
+            if (delete_stop_words == "true" and k in stop_words) or (keep_only_english_words == "true" and k not in words.words()):
+                del vocab[k]
+        print("Create vocabulary = "+str(cnt), end="\r")
+        cnt+=1
 
     return vocab
 
@@ -151,7 +159,7 @@ def output_matrix(input_path, output_path, tokenized_data):
 
 ##################################
 #   PROGRAM
-#   Goal : Create a vocabulary, 
+#   Goal : Create a vocabulary, fit dataset to vocabulary and tokenize the text
 ##################################
 
 vocab = create_vocab(train_data_path,test_data_path)
