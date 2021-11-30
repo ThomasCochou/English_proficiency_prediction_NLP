@@ -37,29 +37,36 @@ cnt = 1
 for input_file in os.listdir():
     if input_file.endswith(".txt"):
 
+        # open each file
         input_text = open(input_file,'r', errors='ignore')
         input_string = input_text.read()
         input_text.close()
 
+        # get each string between <b>
         soup = BeautifulSoup(input_string,'lxml')
         input_soup = soup.find_all('b')
         input_string = "".join(str(input_soup))
 
+        # get only text ?
         soup = BeautifulSoup(input_string,'lxml')
         input_soup = soup.get_text()
         input_string = "".join(str(input_soup))
 
+        # delete ">" char
         input_string = re.sub(">","",input_string)
 
+        # get only text and lower case every word
         pattern = re.compile('[a-zA-Z_ ]')
         matches = pattern.findall(input_string.lower())
         preproccesed_text = "".join(matches)
 
+        # split train/test data
         if cnt < folder_len*float(ratio_train_test) :
         	os.chdir("../../"+output_path+train_data_path)
         else :
         	os.chdir("../../"+output_path+test_data_path)
 
+        # save
         for row_num in range(sheet.nrows):
             row_value = sheet.row_values(row_num)
             if row_value[0].split(".")[0] == input_file.split(".")[0] :
