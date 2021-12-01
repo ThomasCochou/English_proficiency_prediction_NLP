@@ -195,20 +195,23 @@ if use_glove == "true" :
 	glove_model_history = glove_model.fit(np.array(x_train_seq),
 		np.array(y_train),
 		batch_size=128,
-		epochs=100,
+		epochs=30,
 		validation_data=(np.array(x_test_seq),np.array(y_test)),
 		verbose=1)
 
 	show_result(glove_model_history)
 
-else :
+if use_glove == "false" :
 	model = classifier(size_of_vocabulary)
 
 	model_history = model.fit(np.array(x_train_seq),
 		np.array(y_train),
 		batch_size=128,
-		epochs=100,
+		epochs=30,
 		validation_data=(np.array(x_test_seq),np.array(y_test)),
 		verbose=1)
 
 	show_result(model_history)
+
+else :
+	print("choose parameter use_glove")
