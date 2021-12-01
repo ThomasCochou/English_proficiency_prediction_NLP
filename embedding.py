@@ -113,7 +113,7 @@ def word_embedding(size_of_vocabulary,tokenizer):
 def classifier(size_of_vocabulary):
 	model=Sequential()
 
-	model.add(Embedding(size_of_vocabulary,300,input_length=100,trainable=True)) 
+	model.add(Embedding(size_of_vocabulary,300,input_length=embedding_max_len_seq,trainable=True)) 
 	model.add(LSTM(128,return_sequences=True,dropout=0.2))
 	model.add(GlobalMaxPooling1D())
 	model.add(Dense(64,activation='relu')) 
