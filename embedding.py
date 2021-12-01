@@ -4,7 +4,7 @@ from keras.preprocessing.sequence import pad_sequences
 from decouple import config
 from tensorflow import keras
 from keras.models import Sequential
-from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense
+from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense, SpatialDropout1D
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -158,6 +158,31 @@ def glove_classifier(size_of_vocabulary, embedding_matrix):
 	return model
 
 ##################################
+#   CLASSIFIER (EXPERIMENTAL)
+##################################
+
+def experimental_classifier(size_of_vocabulary, embedding_matrix):
+	model=Sequential()
+
+	#embedding layer
+	model.add(Embedding(size_of_vocabulary,300,weights=[embedding_matrix],input_length=int(embedding_max_len_seq),trainable=False)) 
+	model.add(SpatialDropout1D(0.2))
+	#lstm layer
+	model.add(LSTM(128,return_sequences=True,dropout=0.2))
+
+	#Global Maxpooling
+	model.add(GlobalMaxPooling1D())
+
+	#Dense Layer
+	model.add(Dense(64,activation='relu')) 
+	model.add(Dense(9,activation='softmax')) 
+
+	#Add loss function, metrics, optimizer
+	model.compile(optimizer='adam', loss='categorical_crossentropy',metrics=["acc"]) 
+
+	return model
+
+##################################
 #   SHOW RESULT
 ##################################
 def show_result(model_history):
@@ -197,6 +222,7 @@ size_of_vocabulary = len(tokenizer.word_index) + 1 # +1 for padding
 
 print("size of the vocabulary:"+str(len(tokenizer.word_index) + 1))
 
+# GLOVE
 if use_glove == "true" :
 	embedding_matrix = word_embedding(size_of_vocabulary,tokenizer)
 
@@ -211,6 +237,7 @@ if use_glove == "true" :
 
 	show_result(glove_model_history)
 
+# NOT GLOVE
 if use_glove == "false" :
 	model = classifier(size_of_vocabulary)
 
@@ -222,6 +249,21 @@ if use_glove == "false" :
 		verbose=1)
 
 	show_result(model_history)
+
+# EXPERIMENTAL
+if use_glove == "experimental" :
+	embedding_matrix = word_embedding(size_of_vocabulary,tokenizer)
+
+	experimental_model = experimental_classifier(size_of_vocabulary,embedding_matrix)
+
+	experimental_model_history = experimental_model.fit(np.array(x_train_seq),
+		np.array(y_train),
+		batch_size=int(batch_size),
+		epochs=int(epochs),
+		validation_data=(np.array(x_test_seq),np.array(y_test)),
+		verbose=1)
+
+	show_result(experimental_model_history)
 
 else :
 	print("choose parameter use_glove")
