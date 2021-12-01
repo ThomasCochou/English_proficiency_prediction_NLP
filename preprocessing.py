@@ -4,18 +4,24 @@ import re
 import xlrd
 from decouple import config
 
+##################################
+#   PATHS
+##################################
+
 input_path = "NICT_JLE_4.1/LearnerOriginal"
 
 xls_path = "NICT_JLE_4.1/NICT_JLE_list.xls"
 
-
-#PARAMETERS
 output_path = "preprocessed_text/"
 
 train_data_path = "train_data/"
 test_data_path = "test_data/"
 
-ratio_train_test = config("RATIO_TRAIN_TEST")
+##################################
+#   PARAMETERS
+##################################
+
+ratio_train_test = config("PREPROCESSING_RATIO_TRAIN_TEST")
 
 ##################################
 #   PROGRAM

@@ -8,14 +8,22 @@ from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense
 import numpy as np
 import matplotlib.pyplot as plt
 
+##################################
+#   PATHS
+##################################
+
 train_data_path = "preprocessed_text/train_data/"
 test_data_path = "preprocessed_text/test_data/"
 
 output_train_data_path = "matrix_train_data/"
 output_test_data_path = "matrix_test_data/"
 
+##################################
+#   PARAMETERS
+##################################
+
 embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
-use_glove = config("USE_GLOVE")
+use_glove = config("EMBEDDING_USE_GLOVE")
 batch_size = config("EMBEDDING_BATCH_SIZE")
 epochs = config("EMBEDDING_EPOCHS")
 
@@ -208,7 +216,7 @@ if use_glove == "false" :
 
 	model_history = model.fit(np.array(x_train_seq),
 		np.array(y_train),
-		batch_size=inv(batch_size),
+		batch_size=int(batch_size),
 		epochs=int(epochs),
 		validation_data=(np.array(x_test_seq),np.array(y_test)),
 		verbose=1)
