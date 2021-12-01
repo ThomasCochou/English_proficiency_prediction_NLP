@@ -16,8 +16,8 @@ output_test_data_path = "matrix_test_data/"
 
 embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
 use_glove = config("USE_GLOVE")
-batch_size = config("BATCH_SIZE")
-epochs = config("EPOCHS")
+batch_size = config("EMBEDDING_BATCH_SIZE")
+epochs = config("EMBEDDING_EPOCHS")
 
 ##################################
 #   LOAD DATA
