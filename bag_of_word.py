@@ -63,9 +63,11 @@ def create_vocab(path_train,path_test):
     # if word is a stop word from nltk 
     cnt = 0
     for k in list(vocab) :
-        if len(k) <= int(min_word_size) or vocab[k] <= int(min_occurane):
-            if (delete_stop_words == "true" and k in stop_words) or (keep_only_english_words == "true" and k not in words.words()):
-                del vocab[k]
+        if (delete_stop_words == "true" and k in stop_words) or \
+        (keep_only_english_words == "true" and k not in words.words()) or \
+        len(k) <= int(min_word_size) or \
+        vocab[k] <= int(min_occurane):
+            del vocab[k]
         print("Create vocabulary = "+str(cnt), end="\r")
         cnt+=1
 
