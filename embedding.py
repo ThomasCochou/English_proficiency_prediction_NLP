@@ -16,6 +16,8 @@ output_test_data_path = "matrix_test_data/"
 
 embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
 use_glove = config("USE_GLOVE")
+batch_size = config("BATCH_SIZE")
+epochs = config("EPOCHS")
 
 ##################################
 #   LOAD DATA
@@ -113,7 +115,7 @@ def word_embedding(size_of_vocabulary,tokenizer):
 def classifier(size_of_vocabulary):
 	model=Sequential()
 
-	model.add(Embedding(size_of_vocabulary,300,input_length=embedding_max_len_seq,trainable=True)) 
+	model.add(Embedding(size_of_vocabulary,300,input_length=int(embedding_max_len_seq),trainable=True)) 
 	model.add(LSTM(128,return_sequences=True,dropout=0.2))
 	model.add(GlobalMaxPooling1D())
 	model.add(Dense(64,activation='relu')) 
@@ -130,7 +132,7 @@ def glove_classifier(size_of_vocabulary, embedding_matrix):
 	model=Sequential()
 
 	#embedding layer
-	model.add(Embedding(size_of_vocabulary,300,weights=[embedding_matrix],input_length=100,trainable=False)) 
+	model.add(Embedding(size_of_vocabulary,300,weights=[embedding_matrix],input_length=int(embedding_max_len_seq),trainable=False)) 
 
 	#lstm layer
 	model.add(LSTM(128,return_sequences=True,dropout=0.2))
@@ -194,8 +196,8 @@ if use_glove == "true" :
 
 	glove_model_history = glove_model.fit(np.array(x_train_seq),
 		np.array(y_train),
-		batch_size=128,
-		epochs=30,
+		batch_size=batch_size,
+		epochs=epochs,
 		validation_data=(np.array(x_test_seq),np.array(y_test)),
 		verbose=1)
 
@@ -206,8 +208,8 @@ if use_glove == "false" :
 
 	model_history = model.fit(np.array(x_train_seq),
 		np.array(y_train),
-		batch_size=128,
-		epochs=30,
+		batch_size=batch_size,
+		epochs=epochs,
 		validation_data=(np.array(x_test_seq),np.array(y_test)),
 		verbose=1)
 
