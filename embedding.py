@@ -196,8 +196,8 @@ if use_glove == "true" :
 
 	glove_model_history = glove_model.fit(np.array(x_train_seq),
 		np.array(y_train),
-		batch_size=batch_size,
-		epochs=epochs,
+		batch_size=int(batch_size),
+		epochs=int(epochs),
 		validation_data=(np.array(x_test_seq),np.array(y_test)),
 		verbose=1)
 
@@ -208,8 +208,8 @@ if use_glove == "false" :
 
 	model_history = model.fit(np.array(x_train_seq),
 		np.array(y_train),
-		batch_size=batch_size,
-		epochs=epochs,
+		batch_size=inv(batch_size),
+		epochs=int(epochs),
 		validation_data=(np.array(x_test_seq),np.array(y_test)),
 		verbose=1)
 
