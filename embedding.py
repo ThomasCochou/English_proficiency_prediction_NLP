@@ -200,6 +200,8 @@ print("size of the vocabulary:"+str(len(tokenizer.word_index) + 1))
 if use_glove == "true" :
 	embedding_matrix = word_embedding(size_of_vocabulary,tokenizer)
 
+	# print(embedding_matrix)
+
 	glove_model = glove_classifier(size_of_vocabulary,embedding_matrix)
 
 	glove_model_history = glove_model.fit(np.array(x_train_seq),
