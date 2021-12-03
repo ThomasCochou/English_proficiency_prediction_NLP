@@ -1,7 +1,7 @@
 import os
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from decouple import config
+# from decouple import config
 from tensorflow import keras
 from keras.models import Sequential
 from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense
@@ -24,10 +24,10 @@ output_test_data_path = "matrix_test_data/"
 #   PARAMETERS
 ##################################
 
-embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
-use_glove = config("EMBEDDING_USE_GLOVE")
-batch_size = config("EMBEDDING_BATCH_SIZE")
-epochs = config("EMBEDDING_EPOCHS")
+embedding_max_len_seq = 100
+use_glove = false
+batch_size = 10
+epochs = 100
 
 ##################################
 #   LOAD DATA
