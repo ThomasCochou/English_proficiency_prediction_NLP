@@ -8,6 +8,8 @@ from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Spell run python embedding.py -t cpu -m uploads/preprocessed_text
+
 ##################################
 #   PATHS
 ##################################
@@ -77,7 +79,7 @@ def prepare_data(x_train,y_train):
 	tokenizer = Tokenizer()
 
 	#preparing vocabulary
-	tokenizer.fit_on_texts(list(x_train))
+	tokenizer.fit_on_texts(list(x_train)+list(x_test))
 
 	#converting text into integer sequences
 	x_train_seq  = tokenizer.texts_to_sequences(x_train) 
@@ -127,9 +129,9 @@ def classifier(size_of_vocabulary):
 	model.add(LSTM(128,return_sequences=True,dropout=0.2))
 	model.add(GlobalMaxPooling1D())
 	model.add(Dense(64,activation='relu')) 
-	model.add(Dense(9,activation='sigmoid')) 
+	model.add(Dense(9,activation='softmax')) 
 
-	model.compile(optimizer='adam', loss='binary_crossentropy',metrics=["acc"]) 
+	model.compile(optimizer='adam', loss='categorical_crossentropy',metrics=["acc"]) 
 
 	return model
 
@@ -150,10 +152,10 @@ def glove_classifier(size_of_vocabulary, embedding_matrix):
 
 	#Dense Layer
 	model.add(Dense(64,activation='relu')) 
-	model.add(Dense(9,activation='sigmoid')) 
+	model.add(Dense(9,activation='softmax')) 
 
 	#Add loss function, metrics, optimizer
-	model.compile(optimizer='adam', loss='binary_crossentropy',metrics=["acc"]) 
+	model.compile(optimizer='adam', loss='categorical_crossentropy',metrics=["acc"]) 
 
 	return model
 
@@ -199,8 +201,6 @@ print("size of the vocabulary:"+str(len(tokenizer.word_index) + 1))
 
 if use_glove == "true" :
 	embedding_matrix = word_embedding(size_of_vocabulary,tokenizer)
-
-	# print(embedding_matrix)
 
 	glove_model = glove_classifier(size_of_vocabulary,embedding_matrix)
 
