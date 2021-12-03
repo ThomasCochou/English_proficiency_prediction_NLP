@@ -24,7 +24,7 @@ output_test_data_path = "matrix_test_data/"
 #   PARAMETERS
 ##################################
 
-embedding_max_len_seq = 500
+embedding_max_len_seq = 1500
 use_glove = "false"
 batch_size = 1000
 epochs = 100
