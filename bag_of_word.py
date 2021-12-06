@@ -25,15 +25,23 @@ output_val_data_path = "matrix_val_data/"
 #   PARAMETERS
 ##################################
 
-min_occurane = config("BOW_MIN_OCCURANE")
-min_word_size = config("BOW_MIN_WORD_SIZE")
-mode = config("BOW_MODE")
-delete_stop_words = config("BOW_DELETE_STOP_WORDS")
-# /!\ keep_only_english_words slow computing
-keep_only_english_words = config("BOW_KEEP_ONLY_ENGLISH_WORDS")
+BOW_MIN_OCCURANE=5
+BOW_MIN_WORD_SIZE=1
+BOW_MODE=count
+BOW_DELETE_STOP_WORDS=true
+BOW_KEEP_ONLY_ENGLISH_WORDS=false
+BOW_BATCH_SIZE=32
+BOW_EPOCHS=30
 
-batch_size = config("BOW_BATCH_SIZE")
-epochs = config("BOW_EPOCHS")
+min_occurane = 3
+min_word_size = 2
+mode = "count"
+delete_stop_words = "true"
+# /!\ keep_only_english_words slow computing
+keep_only_english_words = "false"
+
+batch_size = 10
+epochs = 35
 
 ##################################
 #   VOCABULARY
