@@ -25,7 +25,7 @@ output_val_data_path = "matrix_val_data/"
 ##################################
 
 embedding_max_len_seq=1500
-use_glove=false
+use_glove="false"
 batch_size=10
 epochs=30
 # embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
