@@ -8,7 +8,7 @@ from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Spell run python embedding.py -t cpu -m uploads/preprocessed_text
+# Spell run python embedding.py -t cpu -m uploads/preprocessed_text -m uploads/glove
 
 ##################################
 #   PATHS
@@ -25,7 +25,7 @@ output_val_data_path = "matrix_val_data/"
 ##################################
 
 embedding_max_len_seq=1500
-use_glove="true"
+use_glove="false"
 batch_size=10
 epochs=30
 # embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
