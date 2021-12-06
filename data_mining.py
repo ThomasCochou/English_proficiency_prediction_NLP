@@ -1,5 +1,14 @@
 import os
 import pandas as pd
+from nltk.corpus import words
+
+##################################
+#   GOALS
+##################################
+
+# Check numbers in class
+# Check mean numbers of english words by class
+# Check repetitve
 
 ##################################
 #   PATHS
@@ -58,7 +67,32 @@ def class_len(data):
 
 	return class_len
 
+##################################
+#   ENGLISH WORDS LEN
+##################################
+def english_word_len(data):
+	english_word_len = dict()
+
+	for key in data :
+		mean_english_words = 0
+		for text in data[key]:
+			splitted_data = text.split()
+			for word in splitted_data :
+				if word in words.words() :
+					mean_english_words += 1
+		english_word_len[key] = mean_english_words/len(data[key])
+
+	return english_word_len
+
+
+##################################
+#   PROGRAM
+##################################
+
 data = split_class(train_data_path,val_data_path)
 class_len = class_len(data)
+english_word_len = english_word_len(data)
 
-print(pd.DataFrame(class_len, index=["len"]))
+print(pd.DataFrame(class_len, index=["class_len"]))
+print(pd.DataFrame(english_word_len, index=["english_word_len"]))
+
