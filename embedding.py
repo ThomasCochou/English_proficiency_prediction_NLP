@@ -8,7 +8,7 @@ from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Spell run python embedding.py -t cpu -m uploads/preprocessed_text
+# Spell run python embedding.py -t cpu -m uploads/preprocessed_text -m uploads/glove
 
 ##################################
 #   PATHS

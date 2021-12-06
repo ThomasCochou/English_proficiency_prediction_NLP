@@ -11,6 +11,8 @@ from keras.layers import Dense,Dropout
 from keras import preprocessing
 import matplotlib.pyplot as plt
 
+# Spell run python bag_of_word.py -t cpu -m uploads/preprocessed_text
+
 ##################################
 #   PATHS
 ##################################
