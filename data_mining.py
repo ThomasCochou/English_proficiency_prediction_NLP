@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from nltk.corpus import words
 
-# Spell run python embedding.py -t cpu -m uploads/preprocessed_text -m uploads/glove
+# Spell run python embedding.py -t cpu -m uploads/preprocessed_text
 
 ##################################
 #   GOALS
