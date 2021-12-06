@@ -1,7 +1,7 @@
 import os
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from decouple import config
+# from decouple import config
 from tensorflow import keras
 from keras.models import Sequential
 from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense
