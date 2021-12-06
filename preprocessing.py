@@ -15,13 +15,13 @@ xls_path = "NICT_JLE_4.1/NICT_JLE_list.xls"
 output_path = "preprocessed_text/"
 
 train_data_path = "train_data/"
-test_data_path = "test_data/"
+val_data_path = "val_data/"
 
 ##################################
 #   PARAMETERS
 ##################################
 
-ratio_train_test = config("PREPROCESSING_RATIO_TRAIN_TEST")
+ratio_train_val = config("PREPROCESSING_RATIO_TRAIN_VAL")
 
 ##################################
 #   PROGRAM
@@ -32,8 +32,8 @@ ratio_train_test = config("PREPROCESSING_RATIO_TRAIN_TEST")
 if not os.path.exists(output_path+train_data_path):
 	os.makedirs(output_path+train_data_path)
 
-if not os.path.exists(output_path+test_data_path):
-	os.makedirs(output_path+test_data_path)
+if not os.path.exists(output_path+val_data_path):
+	os.makedirs(output_path+val_data_path)
 
 
 wb = xlrd.open_workbook(xls_path)
@@ -71,11 +71,11 @@ for input_file in os.listdir():
         matches = pattern.findall(input_string.lower())
         preproccesed_text = "".join(matches)
 
-        # split train/test data
-        if cnt < folder_len*float(ratio_train_test) :
+        # split train/val data
+        if cnt < folder_len*float(ratio_train_val) :
         	os.chdir("../../"+output_path+train_data_path)
         else :
-        	os.chdir("../../"+output_path+test_data_path)
+        	os.chdir("../../"+output_path+val_data_path)
 
         # save
         for row_num in range(sheet.nrows):
