@@ -11,6 +11,17 @@ from keras.layers import Dense,Dropout
 from keras import preprocessing
 import matplotlib.pyplot as plt
 
+# test
+from sklearn import model_selection, svm
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.svm import LinearSVC
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import LinearSVC
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+
 ##################################
 #   PATHS
 ##################################
@@ -107,13 +118,13 @@ def prepare_data(train_data_path, val_data_path, vocab) :
     cnt = 0
     for input_file in os.listdir():
         if input_file.endswith(".txt"):
-            y_value = [0] * 9
+            #y_value = [0] * 9
             input_text = open(input_file,'r')
             input_string = input_text.read()
             input_text.close()
-
-            y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
-            y_train.append(y_value)
+            #y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
+            #y_train.append(y_value)
+            y_train.append(int(input_file.split("_")[1].split(".")[0]))
 
             # get only words in vocab
             tokens_dataset = input_string.split()
@@ -131,13 +142,13 @@ def prepare_data(train_data_path, val_data_path, vocab) :
     cnt = 0
     for input_file in os.listdir():
         if input_file.endswith(".txt"):
-            y_value = [0] * 9
+            # y_value = [0] * 9
             input_text = open(input_file,'r')
             input_string = input_text.read()
             input_text.close()
-
-            y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
-            y_val.append(y_value)
+            # y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
+            # y_val.append(y_value)
+            y_val.append(int(input_file.split("_")[1].split(".")[0]))
 
             # get only words in vocab
             tokens_dataset = input_string.split()
@@ -168,16 +179,46 @@ def classifier(input_shape, output_shape):
     model = Sequential()
 
     model.add(Dense(32, activation='relu', input_shape=(input_shape,)))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.2))
     model.add(Dense(16, activation='relu'))
     model.add(Dropout(0.2))
     model.add(Dense(output_shape, activation='softmax'))
 
-    model.compile(optimizer='rmsprop',
+    model.compile(optimizer='adam',
                   loss='binary_crossentropy',
                   metrics=['accuracy'])
 
     return model
+
+
+
+##################################
+#   OneVsRestClassifier
+##################################
+def ovr_classifier():
+    clf = OneVsRestClassifier(svm.SVC(C=1.0, kernel='linear'))
+    return clf
+
+##################################
+#   SVM
+##################################
+def svm_classifier():
+    clf = svm.SVC(C=1.0, kernel='linear')
+    return clf
+
+##################################
+#   RandomForestClassifier
+##################################
+def rf_classifier():
+    clf = RandomForestClassifier(max_depth=25, random_state=0)
+    return clf
+
+##################################
+#   Linear SVC
+##################################
+def lsvc_classifier():
+    clf = make_pipeline(StandardScaler(), LinearSVC(random_state=0, tol=1e-5))
+    return clf
 
 ##################################
 #   SHOW RESULT
@@ -220,23 +261,37 @@ print(vocab.most_common(100))
 
 x_train, y_train, x_val, y_val = prepare_data(train_data_path,val_data_path,vocab)
 
-tf.convert_to_tensor(x_train, dtype=tf.float32)
-tf.convert_to_tensor(y_train, dtype=tf.float32)
-tf.convert_to_tensor(x_val, dtype=tf.float32)
-tf.convert_to_tensor(y_val, dtype=tf.float32)
+x_train = tf.convert_to_tensor(x_train, dtype=tf.float32)
+y_train = tf.convert_to_tensor(y_train, dtype=tf.float32)
+x_val = tf.convert_to_tensor(x_val, dtype=tf.float32)
+y_val = tf.convert_to_tensor(y_val, dtype=tf.float32)
 
 print("x_train :", x_train.shape)
 print("y_train :", y_train.shape)
 print("x_val :", x_val.shape)
 print("y_val : ", y_val.shape)
 
-model = classifier(x_train.shape[1], len(y_train[0]))
+# model = classifier(x_train.shape[1], len(y_train[0]))
 
-history = model.fit(x_train,
-                    y_train,
-                    epochs=int(epochs),
-                    batch_size=int(batch_size),
-                    validation_data=(x_val, y_val),
-                    verbose=1)
+clf = svm_classifier()
+clf.fit(x_train, y_train)
 
-show_result(history)
+pred = clf.predict(x_val)
+
+# history = model.fit(x_train,
+#                     y_train,
+#                     epochs=int(epochs),
+#                     batch_size=int(batch_size),
+#                     validation_data=(x_val, y_val),
+#                     verbose=1)
+                    
+# y doit être d'une dimension (un tableau avec les scores)
+# history = model.fit(x_train, y_train)
+# pred = model.predict(x_val)
+
+print("SCORE train: ", clf.score(x_train, y_train))
+print("SCORE val: ", clf.score(x_val, y_val))
+print("Accuracy score VAL:", accuracy_score(pred, y_val)*100,"%")
+
+
+
