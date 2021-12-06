@@ -16,10 +16,10 @@ import matplotlib.pyplot as plt
 ##################################
 
 train_data_path = "preprocessed_text/train_data/"
-test_data_path = "preprocessed_text/test_data/"
+val_data_path = "preprocessed_text/val_data/"
 
 output_train_data_path = "matrix_train_data/"
-output_test_data_path = "matrix_test_data/"
+output_val_data_path = "matrix_val_data/"
 
 ##################################
 #   PARAMETERS
@@ -38,7 +38,7 @@ epochs = config("BOW_EPOCHS")
 ##################################
 #   VOCABULARY
 ##################################
-def create_vocab(path_train,path_test):
+def create_vocab(path_train,path_val):
 
     # create Counter and count each words
     vocab = Counter()
@@ -56,7 +56,7 @@ def create_vocab(path_train,path_test):
 
     os.chdir("../../")
 
-    os.chdir(path_test)
+    os.chdir(path_val)
 
     for input_file in os.listdir():
         if input_file.endswith(".txt"):
@@ -90,15 +90,15 @@ def create_vocab(path_train,path_test):
 ##################################
 #   PREPARE DATA
 ##################################
-def prepare_data(train_data_path, test_data_path, vocab) :
+def prepare_data(train_data_path, val_data_path, vocab) :
 
     tokenizer = Tokenizer()
 
     train_dataset = []
-    test_dataset = []
+    val_dataset = []
 
     y_train = list()
-    y_test = list()
+    y_val = list()
 
     os.chdir(train_data_path)
 
@@ -124,9 +124,9 @@ def prepare_data(train_data_path, test_data_path, vocab) :
 
     os.chdir("../../")
 
-    os.chdir(test_data_path)
+    os.chdir(val_data_path)
 
-    test_data_len = len([name for name in os.listdir() if (os.path.isfile(name) and name.endswith(".txt"))])
+    val_data_len = len([name for name in os.listdir() if (os.path.isfile(name) and name.endswith(".txt"))])
 
     cnt = 0
     for input_file in os.listdir():
@@ -137,29 +137,29 @@ def prepare_data(train_data_path, test_data_path, vocab) :
             input_text.close()
 
             y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
-            y_test.append(y_value)
+            y_val.append(y_value)
 
             # get only words in vocab
             tokens_dataset = input_string.split()
             tokens_dataset = [w for w in tokens_dataset if w in vocab]
             text = ' '.join(tokens_dataset)
-            test_dataset.append(text)
+            val_dataset.append(text)
         cnt += 1
 
     os.chdir("../../")
 
-    dataset = train_dataset + test_dataset
+    dataset = train_dataset + val_dataset
 
     # fit the tokenizer on all the texts
     tokenizer.fit_on_texts(dataset)
 
     # transform to matrix each texts with differents modes
     x_train = tokenizer.texts_to_matrix(train_dataset, mode=mode)
-    x_test = tokenizer.texts_to_matrix(test_dataset, mode=mode)
+    x_val = tokenizer.texts_to_matrix(val_dataset, mode=mode)
     y_train = np.array(y_train)
-    y_test = np.array(y_test)
+    y_val = np.array(y_val)
 
-    return x_train, y_train, x_test, y_test
+    return x_train, y_train, x_val, y_val
 
 ##################################
 #   CLASSIFIER 
@@ -214,21 +214,21 @@ def show_result(model_history):
 #   PROGRAM
 ##################################
 
-vocab = create_vocab(train_data_path,test_data_path)
+vocab = create_vocab(train_data_path,val_data_path)
 
 print(vocab.most_common(100))
 
-x_train, y_train, x_test, y_test = prepare_data(train_data_path,test_data_path,vocab)
+x_train, y_train, x_val, y_val = prepare_data(train_data_path,val_data_path,vocab)
 
 tf.convert_to_tensor(x_train, dtype=tf.float32)
 tf.convert_to_tensor(y_train, dtype=tf.float32)
-tf.convert_to_tensor(x_test, dtype=tf.float32)
-tf.convert_to_tensor(y_test, dtype=tf.float32)
+tf.convert_to_tensor(x_val, dtype=tf.float32)
+tf.convert_to_tensor(y_val, dtype=tf.float32)
 
 print("x_train :", x_train.shape)
 print("y_train :", y_train.shape)
-print("x_test :", x_test.shape)
-print("y_test : ", y_test.shape)
+print("x_val :", x_val.shape)
+print("y_val : ", y_val.shape)
 
 model = classifier(x_train.shape[1], len(y_train[0]))
 
@@ -236,7 +236,7 @@ history = model.fit(x_train,
                     y_train,
                     epochs=int(epochs),
                     batch_size=int(batch_size),
-                    validation_data=(x_test, y_test),
+                    validation_data=(x_val, y_val),
                     verbose=1)
 
 show_result(history)
