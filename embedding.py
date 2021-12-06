@@ -24,10 +24,10 @@ output_val_data_path = "matrix_val_data/"
 #   PARAMETERS
 ##################################
 
-embedding_max_len_seq = 2000
-use_glove = "false"
-batch_size = 1000
-epochs = 100
+embedding_max_len_seq = 1500
+use_glove = "true"
+batch_size = 10
+epochs = 35
 
 ##################################
 #   LOAD DATA
