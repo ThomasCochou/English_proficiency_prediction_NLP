@@ -67,6 +67,19 @@ def load_data(path_train,path_val):
 
 	return x_train,y_train,x_val,y_val
 
+##################################
+#   CHOOSING THE RIGHT NUMBER OF NEURONS
+##################################
+
+# Hidden nodes (Nh) = Ns / ( a * (Ni + No))
+# Ns : number of samples in trainding data set
+# No : number of output neurons
+# Ni : number of input neurons
+# a : arbitraty scaling factor
+
+hidden_nodes = int(9/3 * (300 + 9))
+
+
 
 ##################################
 #   PREPARE DATA
@@ -143,7 +156,7 @@ def glove_classifier(size_of_vocabulary, embedding_matrix):
 	model.add(Embedding(size_of_vocabulary,300,weights=[embedding_matrix],input_length=int(embedding_max_len_seq),trainable=False)) 
 
 	#lstm layer
-	model.add(LSTM(128,return_sequences=True,dropout=0.2))
+	model.add(LSTM(hidden_nodes,return_sequences=True,dropout=0.2))
 
 	#Global Maxpooling
 	model.add(GlobalMaxPooling1D())
@@ -262,8 +275,9 @@ if use_glove == "experimental" :
 		epochs=int(epochs),
 		validation_data=(np.array(x_val_seq),np.array(y_val)),
 		verbose=1)
-
+	
 	show_result(experimental_model_history)
+	experimental_model.summary()
 
 else :
 	print("choose parameter use_glove")
