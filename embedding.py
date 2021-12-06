@@ -24,10 +24,14 @@ output_val_data_path = "matrix_val_data/"
 #   PARAMETERS
 ##################################
 
-embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
-use_glove = config("EMBEDDING_USE_GLOVE")
-batch_size = config("EMBEDDING_BATCH_SIZE")
-epochs = config("EMBEDDING_EPOCHS")
+embedding_max_len_seq=1500
+use_glove=false
+batch_size=10
+epochs=30
+# embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
+# use_glove = config("EMBEDDING_USE_GLOVE")
+# batch_size = config("EMBEDDING_BATCH_SIZE")
+# epochs = config("EMBEDDING_EPOCHS")
 
 ##################################
 #   LOAD DATA
@@ -43,11 +47,20 @@ def load_data(path_train,path_val):
 
 	for input_file in os.listdir():
 		if input_file.endswith(".txt"):
-			y_value = [0] * 9
+			y_value = [0] * 5
 			input_text = open(input_file,'r')
 			train_string = input_text.read()
 			x_train.append(train_string)
-			y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == (1 or 2 or 3) :
+				y_value[0] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == (7 or 8 or 9) :
+				y_value[4] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == 4 :
+				y_value[1] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == 5 :
+				y_value[2] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == 6 :
+				y_value[3] = 1
 			y_train.append(y_value)
 			input_text.close()
 
@@ -61,7 +74,16 @@ def load_data(path_train,path_val):
 			input_text = open(input_file,'r')
 			val_string = input_text.read()
 			x_val.append(val_string)
-			y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == (1 or 2 or 3) :
+				y_value[0] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == (7 or 8 or 9) :
+				y_value[4] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == 4 :
+				y_value[1] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == 5 :
+				y_value[2] = 1
+			if int(input_file.split("_")[1].split(".")[0]) == 6 :
+				y_value[3] = 1
 			y_val.append(y_value)
 			input_text.close()
 
@@ -129,7 +151,7 @@ def classifier(size_of_vocabulary):
 	model.add(LSTM(128,return_sequences=True,dropout=0.2))
 	model.add(GlobalMaxPooling1D())
 	model.add(Dense(64,activation='relu')) 
-	model.add(Dense(9,activation='softmax')) 
+	model.add(Dense(5,activation='softmax')) 
 
 	model.compile(optimizer='adam', loss='categorical_crossentropy',metrics=["acc"]) 
 
@@ -153,7 +175,7 @@ def glove_classifier(size_of_vocabulary, embedding_matrix):
 	#Dense Layer
 	model.add(Dense(64,activation='relu')) 
 
-	model.add(Dense(9,activation='softmax')) 
+	model.add(Dense(5,activation='softmax')) 
 
 	#Add loss function, metrics, optimizer
 	model.compile(optimizer='adam', loss='categorical_crossentropy',metrics=["acc"]) 
