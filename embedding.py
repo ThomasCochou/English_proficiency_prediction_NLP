@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 ##################################
 
 train_data_path = "preprocessed_text/train_data/"
-test_data_path = "preprocessed_text/test_data/"
+val_data_path = "preprocessed_text/val_data/"
 
 output_train_data_path = "matrix_train_data/"
-output_test_data_path = "matrix_test_data/"
+output_val_data_path = "matrix_val_data/"
 
 ##################################
 #   PARAMETERS
@@ -32,14 +32,14 @@ epochs = config("EMBEDDING_EPOCHS")
 ##################################
 #   LOAD DATA
 ##################################
-def load_data(path_train,path_test):
+def load_data(path_train,path_val):
 
 	os.chdir(path_train)
 
 	x_train = list()
 	y_train = list()
-	x_test = list()
-	y_test = list()
+	x_val = list()
+	y_val = list()
 
 	for input_file in os.listdir():
 		if input_file.endswith(".txt"):
@@ -53,21 +53,21 @@ def load_data(path_train,path_test):
 
 	os.chdir("../../")
 
-	os.chdir(path_test)
+	os.chdir(path_val)
 
 	for input_file in os.listdir():
 		if input_file.endswith(".txt"):
 			y_value = [0] * 9
 			input_text = open(input_file,'r')
-			test_string = input_text.read()
-			x_test.append(test_string)
+			val_string = input_text.read()
+			x_val.append(val_string)
 			y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
-			y_test.append(y_value)
+			y_val.append(y_value)
 			input_text.close()
 
 	os.chdir("../../")
 
-	return x_train,y_train,x_test,y_test
+	return x_train,y_train,x_val,y_val
 
 
 ##################################
@@ -79,17 +79,17 @@ def prepare_data(x_train,y_train):
 	tokenizer = Tokenizer()
 
 	#preparing vocabulary
-	tokenizer.fit_on_texts(list(x_train)+list(x_test))
+	tokenizer.fit_on_texts(list(x_train)+list(x_val))
 
 	#converting text into integer sequences
 	x_train_seq  = tokenizer.texts_to_sequences(x_train) 
-	x_test_seq = tokenizer.texts_to_sequences(x_test)
+	x_val_seq = tokenizer.texts_to_sequences(x_val)
 
 	#padding to prepare sequences of same length
 	x_train_seq  = pad_sequences(x_train_seq, maxlen=int(embedding_max_len_seq))
-	x_test_seq = pad_sequences(x_test_seq, maxlen=int(embedding_max_len_seq))
+	x_val_seq = pad_sequences(x_val_seq, maxlen=int(embedding_max_len_seq))
 
-	return x_train_seq,x_test_seq,tokenizer
+	return x_train_seq,x_val_seq,tokenizer
 
 ##################################
 #   GloVE EMBEDDING
@@ -192,8 +192,8 @@ def show_result(model_history):
 ##################################
 #   PROGRAM
 ##################################
-x_train,y_train,x_test,y_test = load_data(train_data_path,test_data_path)
-x_train_seq,x_test_seq,tokenizer = prepare_data(x_train,y_train)
+x_train,y_train,x_val,y_val = load_data(train_data_path,val_data_path)
+x_train_seq,x_val_seq,tokenizer = prepare_data(x_train,y_train)
 
 size_of_vocabulary = len(tokenizer.word_index) + 1 # +1 for padding
 
@@ -208,7 +208,7 @@ if use_glove == "true" :
 		np.array(y_train),
 		batch_size=int(batch_size),
 		epochs=int(epochs),
-		validation_data=(np.array(x_test_seq),np.array(y_test)),
+		validation_data=(np.array(x_val_seq),np.array(y_val)),
 		verbose=1)
 
 	show_result(glove_model_history)
@@ -220,7 +220,7 @@ if use_glove == "false" :
 		np.array(y_train),
 		batch_size=int(batch_size),
 		epochs=int(epochs),
-		validation_data=(np.array(x_test_seq),np.array(y_test)),
+		validation_data=(np.array(x_val_seq),np.array(y_val)),
 		verbose=1)
 
 	show_result(model_history)
