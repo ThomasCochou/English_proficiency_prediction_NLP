@@ -70,7 +70,7 @@ def load_data(path_train,path_val):
 
 	for input_file in os.listdir():
 		if input_file.endswith(".txt"):
-			y_value = [0] * 9
+			y_value = [0] * 5
 			input_text = open(input_file,'r')
 			val_string = input_text.read()
 			x_val.append(val_string)
