@@ -21,7 +21,7 @@ val_data_path = "val_data/"
 #   PARAMETERS
 ##################################
 
-ratio_train_val = config("PREPROCESSING_RATIO_TRAIN_TEST")
+ratio_train_val = config("PREPROCESSING_RATIO_TRAIN_VAL")
 
 ##################################
 #   PROGRAM
