@@ -174,7 +174,7 @@ def classifier(input_shape, output_shape):
     model.add(Dense(output_shape, activation='softmax'))
 
     model.compile(optimizer='rmsprop',
-                  loss='binary_crossentropy',
+                  loss='categorical_crossentropy',
                   metrics=['accuracy'])
 
     return model
