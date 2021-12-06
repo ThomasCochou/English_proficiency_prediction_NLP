@@ -152,6 +152,7 @@ def glove_classifier(size_of_vocabulary, embedding_matrix):
 
 	#Dense Layer
 	model.add(Dense(64,activation='relu')) 
+
 	model.add(Dense(9,activation='softmax')) 
 
 	#Add loss function, metrics, optimizer
