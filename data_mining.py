@@ -1,6 +1,7 @@
 import os
 import pandas as pd
-from nltk.corpus import words
+from collections import Counter
+
 
 # Spell run python data_mining.py -t cpu -m uploads/preprocessed_text
 
@@ -70,21 +71,59 @@ def class_len(data):
 	return class_len
 
 ##################################
-#   ENGLISH WORDS LEN
+#   MOST COMMON COUNTER
 ##################################
-def english_word_len(data):
-	english_word_len = dict()
+def most_commons(data):
+	most_commons = dict()
 
 	for key in data :
-		mean_english_words = 0
+		counts = Counter()
 		for text in data[key]:
 			splitted_data = text.split()
 			for word in splitted_data :
-				if word in words.words() :
-					mean_english_words += 1
-		english_word_len[key] = mean_english_words/len(data[key])
+				counts[word] += 1
+		most_commons[key] = counts.most_common(3)
 
-	return english_word_len
+	return most_commons
+
+##################################
+#   STUTTERING COUNTER
+##################################
+def stuttering(data):
+
+	stuttering = dict()
+
+	for key in data :
+		count = 0
+		stuttering_data = dict()
+		for text in data[key]:
+			splitted_data = text.split()
+			prev_word = "<PREV_WORD>"
+			for word in splitted_data :
+				if word == prev_word :
+						count += 1
+				else :
+					if prev_word in stuttering_data:
+						if stuttering_data[prev_word] < count : 
+							stuttering_data[prev_word] = count
+					else :
+						stuttering_data[prev_word] = count
+					prev_word = word
+					count = 0
+		stuttering[key] = stuttering_data
+
+	for class_key in list(stuttering) :
+		for word_key in list(stuttering[class_key]) :
+			if stuttering[class_key][word_key] == 0:
+				del stuttering[class_key][word_key]
+			elif stuttering[class_key][word_key] == 1:
+				del stuttering[class_key][word_key]
+			elif stuttering[class_key][word_key] == 2:
+				del stuttering[class_key][word_key]
+
+	return stuttering
+
+
 
 
 ##################################
@@ -93,8 +132,15 @@ def english_word_len(data):
 
 data = split_class(train_data_path,val_data_path)
 class_len = class_len(data)
-english_word_len = english_word_len(data)
+most_commons = most_commons(data)
+stuttering = stuttering(data)
 
+print("\n\nMOST COMMONS \n")
+print(most_commons)
+
+print("\n\nCLASS LEN \n")
 print(pd.DataFrame(class_len, index=["class_len"]))
-print(pd.DataFrame(english_word_len, index=["english_word_len"]))
+
+print("\n\nSTUTTERING \n")
+print(stuttering)
 
