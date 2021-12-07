@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Spell run python embedding.py -t cpu -m uploads/preprocessed_text -m uploads/glove
-
 ##################################
 #   PATHS
 ##################################
@@ -24,10 +23,10 @@ output_val_data_path = "matrix_val_data/"
 #   PARAMETERS
 ##################################
 
-embedding_max_len_seq=1500
-use_glove="true"
-batch_size=10
-epochs=30
+embedding_max_len_seq=300
+use_glove="false"
+batch_size=300
+epochs=60
 # embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
 # use_glove = config("EMBEDDING_USE_GLOVE")
 # batch_size = config("EMBEDDING_BATCH_SIZE")

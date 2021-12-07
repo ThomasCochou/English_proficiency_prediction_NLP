@@ -123,7 +123,28 @@ def stuttering(data):
 
 	return stuttering
 
+##################################
+#   REFLEXION COUNTER
+##################################
+def reflexion(data):
+	reflexion_words = ["err", "er", "um", "uum", "erm"]
+	reflexion = dict()
 
+	for key in data :
+		counts = Counter()
+		text_len = 0
+		for text in data[key]:
+			text_len = text_len + len(data[key])
+			splitted_data = text.split()
+			for word in splitted_data :
+				if word in reflexion_words :
+					counts[word] += 1
+		for key_count in counts :
+			counts[key_count] = counts[key_count]/text_len
+
+		reflexion[key] = counts
+
+	return reflexion
 
 
 ##################################
@@ -134,6 +155,7 @@ data = split_class(train_data_path,val_data_path)
 class_len = class_len(data)
 most_commons = most_commons(data)
 stuttering = stuttering(data)
+reflexion = reflexion(data)
 
 print("\n\nMOST COMMONS \n")
 print(most_commons)
@@ -144,3 +166,6 @@ print(pd.DataFrame(class_len, index=["class_len"]))
 print("\n\nSTUTTERING \n")
 print(stuttering)
 
+print("\n\nREFLEXION \n")
+for key_class in reflexion :
+	print(pd.DataFrame(reflexion[key_class], index=[key_class]))
