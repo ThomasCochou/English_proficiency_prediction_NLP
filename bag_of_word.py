@@ -20,6 +20,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import LeaveOneOut
+
+from sklearn.model_selection import cross_val_score
 
 
 ##################################
@@ -273,11 +278,6 @@ print("y_val : ", y_val.shape)
 
 # model = classifier(x_train.shape[1], len(y_train[0]))
 
-clf = svm_classifier()
-clf.fit(x_train, y_train)
-
-pred = clf.predict(x_val)
-
 # history = model.fit(x_train,
 #                     y_train,
 #                     epochs=int(epochs),
@@ -289,9 +289,21 @@ pred = clf.predict(x_val)
 # history = model.fit(x_train, y_train)
 # pred = model.predict(x_val)
 
-print("SCORE train: ", clf.score(x_train, y_train))
-print("SCORE val: ", clf.score(x_val, y_val))
+
+# SVM
+
+
+clf = svm.SVC(kernel='linear',
+        C=C, 
+        gamma = gamma,
+        ).fit(x_train, y_train)
+
+pred = clf.predict(x_val)
 print("Accuracy score VAL:", accuracy_score(pred, y_val)*100,"%")
+
+
+# print("SCORE train: ", clf.score(x_train, y_train))
+# # print("SCORE val: ", clf.score(x_val, y_val))
 
 
 
