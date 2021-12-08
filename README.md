@@ -19,9 +19,45 @@ The goal is to build a machine learning algorithm for predicting the SST score o
 
   5 - Try to improve your system (for example you can try to use GloVe instead of BoW). 
 
-## Adjustments
-  - Filter out stop and short words with NLTK -> Add parameters to `preprocessing.py`
-  - Looking for the importance of 'Mmmm' 'Hum' (reflexion) so not keeping only english words
+## Classifiers parameters:
+  
+  `preprocessing.py`
+      
+    PREPROCESSING_RATIO_TRAIN_VAL -> ratio between train and val spitting (0 - 1)
+  
+  `bag_of_words.py`
+  
+    BOW_MERGED_CLASS -> merge classes 1 2 3 and 7 8 9 (true or false)
+  
+    BOW_MIN_OCCURANE -> minimum occurane in the text to be in the bag of word (0 - ∞)
+  
+    BOW_MIN_WORD_SIZE -> minimum size of the word to be in the bag of word (0 - ∞)
+  
+    BOW_MODE -> mode of the text to matrix ("binary", "count", "tfidf", "freq")
+  
+    BOW_DELETE_STOP_WORDS -> uses of NLTK to delete the stopword from the bag of words (true or false)
+  
+    BOW_KEEP_ONLY_ENGLISH_WORDS -> uses of NLTK to keep only english words from the bag of words (true or false) (/!\ long computing time)
+  
+    BOW_CLASSIFIER -> choice of classifier (svm or deep)
+  
+    BOW_BATCH_SIZE -> batch size for deep classifier (1 - ∞)
+  
+    BOW_EPOCHS -> epoch for deep classifier (1 - ∞)
+
+  `embedding.py`
+  
+    EMBEDDING_MERGED_CLASS -> merge classes 1 2 3 and 7 8 9 (true or false)
+  
+    EMBEDDING_MAX_LEN_SEQ -> size of the padding for the embedding sequence (1 - ∞)
+  
+    EMBEDDING_USE_GLOVE -> uses of GloVe (true or false)
+  
+    EMBEDDING_BATCH_SIZE -> batch size for the classifier (1 - ∞)
+  
+    EMBEDDING_EPOCHS -> epochs for the classifier (1 - ∞)
+  
+  
   
 ## Errors
 if `bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?`
