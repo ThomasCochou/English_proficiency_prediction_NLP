@@ -1,7 +1,7 @@
 import os
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-# from decouple import config
+from decouple import config
 from tensorflow import keras
 from keras.models import Sequential
 from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense
@@ -23,14 +23,13 @@ output_val_data_path = "matrix_val_data/"
 #   PARAMETERS
 ##################################
 
-embedding_max_len_seq=300
-use_glove="false"
-batch_size=300
-epochs=60
-# embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
-# use_glove = config("EMBEDDING_USE_GLOVE")
-# batch_size = config("EMBEDDING_BATCH_SIZE")
-# epochs = config("EMBEDDING_EPOCHS")
+embedding_max_len_seq = config("EMBEDDING_MAX_LEN_SEQ")
+use_glove = config("EMBEDDING_USE_GLOVE")
+
+merged_class = config("EMBEDDING_MERGED_CLASS")
+
+batch_size = config("EMBEDDING_BATCH_SIZE")
+epochs = config("EMBEDDING_EPOCHS")
 
 ##################################
 #   LOAD DATA
@@ -46,20 +45,32 @@ def load_data(path_train,path_val):
 
 	for input_file in os.listdir():
 		if input_file.endswith(".txt"):
-			y_value = [0] * 5
 			input_text = open(input_file,'r')
 			train_string = input_text.read()
 			x_train.append(train_string)
-			if int(input_file.split("_")[1].split(".")[0]) == (1 or 2 or 3) :
-				y_value[0] = 1
-			if int(input_file.split("_")[1].split(".")[0]) == (7 or 8 or 9) :
-				y_value[4] = 1
-			if int(input_file.split("_")[1].split(".")[0]) == 4 :
-				y_value[1] = 1
-			if int(input_file.split("_")[1].split(".")[0]) == 5 :
-				y_value[2] = 1
-			if int(input_file.split("_")[1].split(".")[0]) == 6 :
-				y_value[3] = 1
+			if merged_class == "true" :
+				y_value = [0] * 5
+				if int(input_file.split("_")[1].split(".")[0]) == 1 :
+					y_value[0] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 2 :
+					y_value[0] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 3 :
+					y_value[0] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 4 :
+					y_value[1] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 5 :
+					y_value[2] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 6 :
+					y_value[3] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 7 :
+					y_value[4] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 8 :
+					y_value[4] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 9 :
+					y_value[4] = 1
+			else :
+				y_value = [0] * 9
+				y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
 			y_train.append(y_value)
 			input_text.close()
 
@@ -73,16 +84,29 @@ def load_data(path_train,path_val):
 			input_text = open(input_file,'r')
 			val_string = input_text.read()
 			x_val.append(val_string)
-			if int(input_file.split("_")[1].split(".")[0]) == (1 or 2 or 3) :
-				y_value[0] = 1
-			if int(input_file.split("_")[1].split(".")[0]) == (7 or 8 or 9) :
-				y_value[4] = 1
-			if int(input_file.split("_")[1].split(".")[0]) == 4 :
-				y_value[1] = 1
-			if int(input_file.split("_")[1].split(".")[0]) == 5 :
-				y_value[2] = 1
-			if int(input_file.split("_")[1].split(".")[0]) == 6 :
-				y_value[3] = 1
+			if merged_class == "true" :
+				y_value = [0] * 5
+				if int(input_file.split("_")[1].split(".")[0]) == 1 :
+					y_value[0] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 2 :
+					y_value[0] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 3 :
+					y_value[0] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 4 :
+					y_value[1] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 5 :
+					y_value[2] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 6 :
+					y_value[3] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 7 :
+					y_value[4] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 8 :
+					y_value[4] = 1
+				if int(input_file.split("_")[1].split(".")[0]) == 9 :
+					y_value[4] = 1
+			else :
+				y_value = [0] * 9
+				y_value[int(input_file.split("_")[1].split(".")[0])-1] = 1
 			y_val.append(y_value)
 			input_text.close()
 
@@ -143,14 +167,14 @@ def word_embedding(size_of_vocabulary,tokenizer):
 ##################################
 #   CLASSIFIER (without GloVe)
 ##################################
-def classifier(size_of_vocabulary):
+def classifier(size_of_vocabulary,output_size):
 	model=Sequential()
 
 	model.add(Embedding(size_of_vocabulary,300,input_length=int(embedding_max_len_seq),trainable=True)) 
 	model.add(LSTM(128,return_sequences=True,dropout=0.2))
 	model.add(GlobalMaxPooling1D())
 	model.add(Dense(64,activation='relu')) 
-	model.add(Dense(5,activation='softmax')) 
+	model.add(Dense(output_size,activation='softmax')) 
 
 	model.compile(optimizer='adam', loss='categorical_crossentropy',metrics=["acc"]) 
 
@@ -159,7 +183,7 @@ def classifier(size_of_vocabulary):
 ##################################
 #   CLASSIFIER (using GloVe)
 ##################################
-def glove_classifier(size_of_vocabulary, embedding_matrix):
+def glove_classifier(size_of_vocabulary, embedding_matrix,output_size):
 	model=Sequential()
 
 	#embedding layer
@@ -174,7 +198,7 @@ def glove_classifier(size_of_vocabulary, embedding_matrix):
 	#Dense Layer
 	model.add(Dense(64,activation='relu')) 
 
-	model.add(Dense(5,activation='softmax')) 
+	model.add(Dense(output_size,activation='softmax')) 
 
 	#Add loss function, metrics, optimizer
 	model.compile(optimizer='adam', loss='categorical_crossentropy',metrics=["acc"]) 
@@ -217,6 +241,13 @@ def show_result(model_history):
 x_train,y_train,x_val,y_val = load_data(train_data_path,val_data_path)
 x_train_seq,x_val_seq,tokenizer = prepare_data(x_train,y_train)
 
+
+print("x_train :", x_train_seq.shape)
+print("y_train : ("+str(len(y_train))+", "+str(len(y_train[0]))+")")
+print("x_val :", x_val_seq.shape)
+print("y_train : ("+str(len(y_val))+", "+str(len(y_val[0]))+")")
+
+
 size_of_vocabulary = len(tokenizer.word_index) + 1 # +1 for padding
 
 print("size of the vocabulary:"+str(len(tokenizer.word_index) + 1))
@@ -224,7 +255,7 @@ print("size of the vocabulary:"+str(len(tokenizer.word_index) + 1))
 if use_glove == "true" :
 	embedding_matrix = word_embedding(size_of_vocabulary,tokenizer)
 
-	glove_model = glove_classifier(size_of_vocabulary,embedding_matrix)
+	glove_model = glove_classifier(size_of_vocabulary,embedding_matrix,len(y_train[0]))
 
 	glove_model_history = glove_model.fit(np.array(x_train_seq),
 		np.array(y_train),
@@ -236,7 +267,7 @@ if use_glove == "true" :
 	show_result(glove_model_history)
 
 if use_glove == "false" :
-	model = classifier(size_of_vocabulary)
+	model = classifier(size_of_vocabulary, len(y_train[0]))
 
 	model_history = model.fit(np.array(x_train_seq),
 		np.array(y_train),
@@ -246,6 +277,3 @@ if use_glove == "false" :
 		verbose=1)
 
 	show_result(model_history)
-
-else :
-	print("choose parameter use_glove")
