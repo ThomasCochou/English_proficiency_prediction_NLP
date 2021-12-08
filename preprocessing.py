@@ -22,6 +22,7 @@ val_data_path = "val_data/"
 ##################################
 
 ratio_train_val = config("PREPROCESSING_RATIO_TRAIN_VAL")
+delete_reflexion = config("DELETE_REFLEXION")
 
 ##################################
 #   PROGRAM
@@ -56,7 +57,13 @@ for input_file in os.listdir():
         # get each string between <b>
         soup = BeautifulSoup(input_string,'lxml')
         input_soup = soup.find_all('b')
-        input_string = "".join(str(input_soup))
+        input_string = "".join(str(input_soup).lower())
+
+        # delete reflexion
+        if delete_reflexion == "true" :
+                clean = re.compile('<f>')
+                re.sub(clean, '', input_string)
+        print(input_string)
 
         # get only text ?
         soup = BeautifulSoup(input_string,'lxml')
