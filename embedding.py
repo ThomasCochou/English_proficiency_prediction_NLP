@@ -8,7 +8,6 @@ from keras.layers import Embedding,LSTM,GlobalMaxPooling1D,Dense
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Spell run python embedding.py -t cpu -m uploads/preprocessed_text -m uploads/glove
 ##################################
 #   PATHS
 ##################################
@@ -186,21 +185,14 @@ def classifier(size_of_vocabulary,output_size):
 def glove_classifier(size_of_vocabulary, embedding_matrix,output_size):
 	model=Sequential()
 
-	#embedding layer
+
 	model.add(Embedding(size_of_vocabulary,300,weights=[embedding_matrix],input_length=int(embedding_max_len_seq),trainable=False)) 
-
-	#lstm layer
 	model.add(LSTM(128,return_sequences=True,dropout=0.2))
-
-	#Global Maxpooling
 	model.add(GlobalMaxPooling1D())
-
-	#Dense Layer
 	model.add(Dense(64,activation='relu')) 
-
 	model.add(Dense(output_size,activation='softmax')) 
 
-	#Add loss function, metrics, optimizer
+
 	model.compile(optimizer='adam', loss='categorical_crossentropy',metrics=["acc"]) 
 
 	return model
@@ -248,9 +240,9 @@ print("x_val :", x_val_seq.shape)
 print("y_train : ("+str(len(y_val))+", "+str(len(y_val[0]))+")")
 
 
-size_of_vocabulary = len(tokenizer.word_index) + 1 # +1 for padding
+size_of_vocabulary = len(tokenizer.word_index)
 
-print("size of the vocabulary:"+str(len(tokenizer.word_index) + 1))
+print("size of the vocabulary:"+str(len(tokenizer.word_index)))
 
 if use_glove == "true" :
 	embedding_matrix = word_embedding(size_of_vocabulary,tokenizer)

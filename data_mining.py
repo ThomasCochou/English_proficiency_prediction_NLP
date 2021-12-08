@@ -3,16 +3,6 @@ import pandas as pd
 from collections import Counter
 
 
-# Spell run python data_mining.py -t cpu -m uploads/preprocessed_text
-
-##################################
-#   GOALS
-##################################
-
-# Check numbers in class
-# Check mean numbers of english words by class
-# Check repetitve
-
 ##################################
 #   PATHS
 ##################################
