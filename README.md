@@ -89,6 +89,83 @@ In order to get a more robust algorithm, we could split randomly the data in the
     EMBEDDING_EPOCHS -> epochs for the classifier (1 - ∞)
   
   
+## Results
+
+`env1`
+
+```
+EMBEDDING_MERGED_CLASS=true
+EMBEDDING_MAX_LEN_SEQ=1500
+EMBEDDING_USE_GLOVE=false
+EMBEDDING_BATCH_SIZE=64
+EMBEDDING_EPOCHS=20
+```
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_1/e1_train_val_acc_fig.png" width="400"> <img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_1/e1_train_val_loss_fig.png" width="400">
+
+`env2`
+
+```
+EMBEDDING_MERGED_CLASS=false
+EMBEDDING_MAX_LEN_SEQ=1500
+EMBEDDING_USE_GLOVE=false
+EMBEDDING_BATCH_SIZE=64
+EMBEDDING_EPOCHS=20
+```
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_2/e2_train_val_acc_fig.png" width="400"> <img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_2/e2_train_val_loss_fig.png" width="400">
+
+`env3`
+
+```
+EMBEDDING_MERGED_CLASS=true
+EMBEDDING_MAX_LEN_SEQ=1500
+EMBEDDING_USE_GLOVE=true
+EMBEDDING_BATCH_SIZE=64
+EMBEDDING_EPOCHS=20
+```
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_3/e3_train_val_acc_fig.png" width="400"> <img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_3/e3_train_val_loss_fig.png" width="400">
+
+`env4`
+
+```
+EMBEDDING_MERGED_CLASS=false
+EMBEDDING_MAX_LEN_SEQ=1500
+EMBEDDING_USE_GLOVE=true
+EMBEDDING_BATCH_SIZE=64
+EMBEDDING_EPOCHS=30
+```
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_4/e4_train_val_acc_fig.png" width="400"> <img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_4/e4_train_val_loss_fig.png" width="400">
+
+`env5`
+
+```
+BOW_MERGED_CLASS=false
+BOW_MIN_OCCURANE=7
+BOW_MIN_WORD_SIZE=1
+BOW_MODE=count
+BOW_DELETE_STOP_WORDS=false
+BOW_KEEP_ONLY_ENGLISH_WORDS=false
+BOW_CLASSIFIER=svm
+BOW_BATCH_SIZE=64
+BOW_EPOCHS=100
+```
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_5/e5_accuracy.png" width="400"> <img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_5/e5_confusion_matrix.png" width="400">
+
+`env4`
+
+```
+BOW_MERGED_CLASS=true
+BOW_MIN_OCCURANE=7
+BOW_MIN_WORD_SIZE=1
+BOW_MODE=count
+BOW_DELETE_STOP_WORDS=false
+BOW_KEEP_ONLY_ENGLISH_WORDS=false
+BOW_CLASSIFIER=svm
+BOW_BATCH_SIZE=64
+BOW_EPOCHS=100
+```
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_6/e6_accuracy.png" width="400"> <img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/env_6/e6_confusion_matrix.png" width="400">
+
+  
 ## NLTK
 To get NLTK stopwords and words
 
