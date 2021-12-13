@@ -19,7 +19,7 @@ The goal is to build a machine learning algorithm for predicting the SST score o
 
   4 - Compute the accuracy of your system (the number of participant classified correctly) and plot the confusion matrix.
 
-  5 - Try to improve your system (for example using GloVe instead of BoW). 
+  5 - Try to improve your system using GloVe instead of BoW. 
 
 ## Data mining
 
