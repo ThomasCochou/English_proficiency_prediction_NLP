@@ -28,6 +28,8 @@ Due to lack of data, the classifier's accuracy never reached over 44%. Data mini
 ## Next:
 Data mining showed that reflexions words like: "err", "er", "um", "uum", "erm" are as much present in each files. It could be better to remove these noises.
 
+In order to get a more robust algorithm, we could split randomly the data in the preprocessing script.
+
 ## Files:
 
 `./glove/glove.6B.300d.txt` : GloVe files for embedding (https://nlp.stanford.edu/projects/glove/)
