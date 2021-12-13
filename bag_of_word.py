@@ -12,6 +12,7 @@ from keras import preprocessing
 import matplotlib.pyplot as plt
 from sklearn import model_selection, svm
 from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import plot_confusion_matrix
 
 ##################################
 #   PATHS
@@ -352,3 +353,6 @@ if classifier_choice == "svm" :
 
     pred = clf.predict(x_val)
     print("Accuracy score VAL:", accuracy_score(pred, y_val)*100,"%")
+    plot_confusion_matrix(clf, x_val, y_val)  
+
+    plt.show()
