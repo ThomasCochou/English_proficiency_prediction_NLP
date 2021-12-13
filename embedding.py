@@ -240,7 +240,7 @@ print("x_val :", x_val_seq.shape)
 print("y_train : ("+str(len(y_val))+", "+str(len(y_val[0]))+")")
 
 
-size_of_vocabulary = len(tokenizer.word_index)
+size_of_vocabulary = len(tokenizer.word_index) + 1
 
 print("size of the vocabulary:"+str(len(tokenizer.word_index)))
 
