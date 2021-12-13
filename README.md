@@ -1,4 +1,6 @@
 # English_proficiency_prediction_NLP
+*by Lucas Brand & Thomas Cochou*
+
 The aim of this task is to predict someone's English proficiency based on a text input.
 
 Using the The NICT JLE Corpus available here : https://alaginrc.nict.go.jp/nict_jle/index_E.html
@@ -9,7 +11,7 @@ The goal is to build a machine learning algorithm for predicting the SST score o
 
 ## Steps:
 
-  1 - Pre-process the dataset: extract the participant transcript (all <B><B/> tags). Inside participant transcript, you can remove all other tags and extract only English words.
+  1 - Pre-process the dataset: extract the participant transcript (all `<B><B/>` tags). Inside participant transcript, and remove all other tags and extract only English words.
 
   2 - Process the dataset: extract features with the Bag of Word (BoW) technique
 
@@ -17,9 +19,36 @@ The goal is to build a machine learning algorithm for predicting the SST score o
 
   4 - Compute the accuracy of your system (the number of participant classified correctly) and plot the confusion matrix.
 
-  5 - Try to improve your system (for example you can try to use GloVe instead of BoW). 
+  5 - Try to improve your system (for example using GloVe instead of BoW). 
 
-## Classifiers parameters:
+## Adjustments:
+
+Due to lack of data, the classifier's accuracy never reached over 44%. Data mining showed that the level 1 2 3 and 7 8 9 were under-represented. We merged these class in order to get a better accuracy (parameters: `BOW_MERGED_CLASS` and `EMBEDDING_MERGED_CLASS`).
+
+## Next:
+Data mining showed that reflexions words like: "err", "er", "um", "uum", "erm" are as much present in each files. It could be better to remove these noises.
+
+## Files:
+
+`./glove/glove.6B.300d.txt` : GloVe files for embedding (https://nlp.stanford.edu/projects/glove/)
+
+`./NICT_JLE_4.1` : Transcripts source files (https://alaginrc.nict.go.jp/nict_jle/index_E.html)
+
+`./preprocessed_text` : Generated folder with the preprocessed texts
+
+`.env` : environment variable of the parameters
+
+`bag_of_word.py` : Bag of Word classifier script
+
+`data_mining.py` : Data mining script
+
+`embedding.py` : Embedding script
+
+`preprocessing.py` : Preprocessing script
+
+
+
+## Parameters `.env`:
   
   `preprocessing.py`
       
@@ -47,8 +76,8 @@ The goal is to build a machine learning algorithm for predicting the SST score o
 
   `embedding.py`
   
-    EMBEDDING_MERGED_CLASS -> merge classes 1 2 3 and 7 8 9 (true or false)
-  
+    EMBEDDING_MERGED_CLASS ->  merge classes 1 2 3 and 7 8 9 (true or false)
+    
     EMBEDDING_MAX_LEN_SEQ -> size of the padding for the embedding sequence (1 - ∞)
   
     EMBEDDING_USE_GLOVE -> uses of GloVe (true or false)
@@ -58,14 +87,15 @@ The goal is to build a machine learning algorithm for predicting the SST score o
     EMBEDDING_EPOCHS -> epochs for the classifier (1 - ∞)
   
   
+## NLTK
+To get NLTK stopwords and words
+
+```
+import nltk
+nltk.download()
+```
   
 ## Errors
 if `bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?`
 then `pip install lxml`
 
-To get NLTK stopwords and words
-  
-```
-import nltk
-nltk.download()
-```
