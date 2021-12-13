@@ -21,9 +21,31 @@ The goal is to build a machine learning algorithm for predicting the SST score o
 
   5 - Try to improve your system (for example using GloVe instead of BoW). 
 
+## Data mining
+
+*Class 1, 2, 7 and 8 are under-represented compared to 4 and 5*
+
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/data_mining/class_length.png" width="300">
+
+
+*The most common words by class*
+
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/data_mining/most_common_words.png" width="600">
+
+
+*Percentage chance to get one of these reflexion words by class*
+
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/data_mining/reflexion_words.png" width="300">
+
+
+*Stuttered words by class*
+
+<img src="https://github.com/ThomasCochou/English_proficiency_prediction_NLP/blob/main/Metrics/data_mining/stuttering_words.png" width="600">
+
+
 ## Adjustments:
 
-Due to lack of data, the classifier's accuracy never reached over 44%. Data mining showed that the level 1 2 3 and 7 8 9 were under-represented. We merged these class in order to get a better accuracy (parameters: `BOW_MERGED_CLASS` and `EMBEDDING_MERGED_CLASS`).
+Due to lack of data, the classifier's accuracy never reached over 44%. Data mining showed that the level 1 2 and 8 9 were under-represented. We merged these class in order to get a better accuracy (parameters: `BOW_MERGED_CLASS` and `EMBEDDING_MERGED_CLASS`).
 
 ## Next:
 Data mining showed that reflexions words like: "err", "er", "um", "uum", "erm" are as much present in each files. It could be better to remove these noises.
