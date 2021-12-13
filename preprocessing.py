@@ -58,7 +58,7 @@ for input_file in os.listdir():
         input_soup = soup.find_all('b')
         input_string = "".join(str(input_soup))
 
-        # get only text ?
+        # get only text
         soup = BeautifulSoup(input_string,'lxml')
         input_soup = soup.get_text()
         input_string = "".join(str(input_soup))
